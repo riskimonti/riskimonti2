@@ -27,8 +27,8 @@ class ImageGraphClassView(ListView):
         "title": "Image Graph",
         "menus": menus,
         "logo": "myapp/images/Logo.png",
-        "content": "Welcome to VisionSlice!",
-        "contributor": "VisionSlice Team",
+        "content": "Welcome to TOKSlice!",
+        "contributor": "TOKSlice Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
     }
@@ -196,8 +196,8 @@ class ImageTableColorClassView(ListView):
         "title": "Image Table Color",
         "menus": menus,
         "logo": "myapp/images/Logo.png",
-        "content": "Welcome to VisionSlice!",
-        "contributor": "VisionSlice Team",
+        "content": "Welcome to TOKSlice!",
+        "contributor": "TOKSlice Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
     }
@@ -277,8 +277,8 @@ class ImageGraphColorClassView(ListView):
         "title": "Image Graph Color",
         "menus": menus,
         "logo": "myapp/images/Logo.png",
-        "content": "Welcome to VisionSlice!",
-        "contributor": "VisionSlice Team",
+        "content": "Welcome to TOKSlice!",
+        "contributor": "TOKSlice Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
     }
@@ -406,9 +406,15 @@ class ImageGraphColorClassView(ListView):
         rand_score_data = list(rand_score_data)
         jaccard_score_data = segment_data.values_list("jaccard_score", flat=True)
         jaccard_score_data = list(jaccard_score_data)
+        mse_data = segment_data.values_list("mse", flat=True)
+        mse_data = list(mse_data)
+        psnr_data = segment_data.values_list("psnr", flat=True)
+        psnr_data = list(psnr_data)
 
         unique_fields2 = [
             "f1_score",
+            "mse",
+            "psnr",
             "rand_score",
             "jaccard_score",
             "image_preprocessing__resize",
@@ -446,164 +452,308 @@ class ImageGraphColorClassView(ListView):
 
         for field, values in field_data2.items():
             data_int[field] = [field_mapping2[field][value] for value in values]
+        if segmentation_types:
+            self.extra_context["total_data"] = len(queryset) / len(segmentation_types)
+        else:
+            self.extra_context["total_data"] = len(queryset)
 
-        self.extra_context["total_data"] = len(queryset) / len(segmentation_types)
-
-        f1_score_terbaik = max(f1_score_data)
-        f1_score_terjelek = min(f1_score_data)
-        indeks_f1_terbaik = f1_score_data.index(f1_score_terbaik)
-        indeks_f1_terjelek = f1_score_data.index(f1_score_terjelek)
-
-        rand_score_terbaik = max(rand_score_data)
-        rand_score_terjelek = min(rand_score_data)
-        indeks_rand_terbaik = rand_score_data.index(rand_score_terbaik)
-        indeks_rand_terjelek = rand_score_data.index(rand_score_terjelek)
-
-        jaccard_score_terbaik = max(jaccard_score_data)
-        jaccard_score_terjelek = min(jaccard_score_data)
-        indeks_jaccard_terbaik = jaccard_score_data.index(jaccard_score_terbaik)
-        indeks_jaccard_terjelek = jaccard_score_data.index(jaccard_score_terjelek)
-        indeks_terbaik = max(
-            indeks_f1_terbaik, indeks_rand_terbaik, indeks_jaccard_terbaik
+        f1_score_terbaik = max(f1_score_data) if f1_score_data else 0
+        f1_score_terjelek = min(f1_score_data) if f1_score_data else 0
+        indeks_f1_terbaik = (
+            f1_score_data.index(f1_score_terbaik) if f1_score_data else 0
         )
-        indeks_terjelek = min(
-            indeks_f1_terjelek, indeks_rand_terjelek, indeks_jaccard_terjelek
+        indeks_f1_terjelek = (
+            f1_score_data.index(f1_score_terjelek) if f1_score_data else 0
+        )
+
+        rand_score_terbaik = max(rand_score_data) if rand_score_data else 0
+        rand_score_terjelek = min(rand_score_data) if rand_score_data else 0
+        indeks_rand_terbaik = (
+            rand_score_data.index(rand_score_terbaik) if rand_score_data else 0
+        )
+        indeks_rand_terjelek = (
+            rand_score_data.index(rand_score_terjelek) if rand_score_data else 0
+        )
+
+        jaccard_score_terbaik = max(jaccard_score_data) if jaccard_score_data else 0
+        jaccard_score_terjelek = min(jaccard_score_data) if jaccard_score_data else 0
+        indeks_jaccard_terbaik = (
+            jaccard_score_data.index(jaccard_score_terbaik) if jaccard_score_data else 0
+        )
+        indeks_jaccard_terjelek = (
+            jaccard_score_data.index(jaccard_score_terjelek)
+            if jaccard_score_data
+            else 0
+        )
+        indeks_terbaik = (
+            max(indeks_f1_terbaik, indeks_rand_terbaik, indeks_jaccard_terbaik)
+            if f1_score_data
+            else 0
+        )
+        indeks_terjelek = (
+            min(indeks_f1_terjelek, indeks_rand_terjelek, indeks_jaccard_terjelek)
+            if f1_score_data
+            else 0
         )
 
         self.extra_context["best"] = {
             "index": indeks_terbaik,
-            "color": field_data["image__color"][indeks_terbaik],
-            "segmentation": field_data2["segmentation_type"][indeks_terbaik],
-            "width": field_data["image__width"][indeks_terbaik],
-            "height": field_data["image__height"][indeks_terbaik],
-            "size": field_data["image__size"][indeks_terbaik],
-            "channel": field_data["image__channel"][indeks_terbaik],
-            "format": field_data["image__format"][indeks_terbaik],
-            "dpi": field_data["image__dpi"][indeks_terbaik],
-            "distance": field_data["image__distance"][indeks_terbaik],
-            "uploader": field_data["image__uploader__username"][indeks_terbaik],
-            "f1_score": f1_score_data[indeks_terbaik],
-            "rand_score": rand_score_data[indeks_terbaik],
-            "jaccard_score": jaccard_score_data[indeks_terbaik],
-            "resize": field_data2["image_preprocessing__resize"][indeks_terbaik],
+            "color": field_data["image__color"][indeks_terbaik]
+            if field_data["image__color"]
+            else None,
+            "segmentation": field_data2["segmentation_type"][indeks_terbaik]
+            if field_data2["segmentation_type"]
+            else None,
+            "width": field_data["image__width"][indeks_terbaik]
+            if field_data["image__width"]
+            else None,
+            "height": field_data["image__height"][indeks_terbaik]
+            if field_data["image__height"]
+            else None,
+            "size": field_data["image__size"][indeks_terbaik]
+            if field_data["image__size"]
+            else None,
+            "channel": field_data["image__channel"][indeks_terbaik]
+            if field_data["image__channel"]
+            else None,
+            "format": field_data["image__format"][
+                indeks_terbaik if field_data["image__format"] else None
+            ]
+            if field_data["image__format"]
+            else None,
+            "dpi": field_data["image__dpi"][indeks_terbaik]
+            if field_data["image__dpi"]
+            else None,
+            "distance": field_data["image__distance"][indeks_terbaik]
+            if field_data["image__distance"]
+            else None,
+            "uploader": field_data["image__uploader__username"][indeks_terbaik]
+            if field_data["image__uploader__username"]
+            else None,
+            "f1_score": f1_score_data[indeks_terbaik] if f1_score_data else None,
+            "mse": mse_data[indeks_terbaik] if mse_data else None,
+            "psnr": psnr_data[indeks_terbaik] if psnr_data else None,
+            "rand_score": rand_score_data[indeks_terbaik] if rand_score_data else None,
+            "jaccard_score": jaccard_score_data[indeks_terbaik]
+            if jaccard_score_data
+            else None,
+            "resize": field_data2["image_preprocessing__resize"][indeks_terbaik]
+            if field_data2["image_preprocessing__resize"]
+            else None,
             "resize_width": field_data2["image_preprocessing__resize_width"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__resize_width"]
+            else None,
             "resize_height": field_data2["image_preprocessing__resize_height"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__resize_height"]
+            else None,
             "resize_percent": field_data2["image_preprocessing__resize_percent"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__resize_percent"]
+            else None,
             "gaussian_filter": field_data2["image_preprocessing__gaussian_filter"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__gaussian_filter"]
+            else None,
             "gaussian_filter_size": field_data2[
                 "image_preprocessing__gaussian_filter_size"
-            ][indeks_terbaik],
+            ][indeks_terbaik]
+            if field_data2["image_preprocessing__gaussian_filter_size"]
+            else None,
             "median_filter": field_data2["image_preprocessing__median_filter"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__median_filter"]
+            else None,
             "median_filter_size": field_data2[
                 "image_preprocessing__median_filter_size"
-            ][indeks_terbaik],
+            ][indeks_terbaik]
+            if field_data2["image_preprocessing__median_filter_size"]
+            else None,
             "mean_filter": field_data2["image_preprocessing__mean_filter"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__mean_filter"]
+            else None,
             "mean_filter_size": field_data2["image_preprocessing__mean_filter_size"][
                 indeks_terbaik
-            ],
-            "brightness": field_data2["image_preprocessing__brightness"][
-                indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__mean_filter_size"]
+            else None,
+            "brightness": field_data2["image_preprocessing__brightness"][indeks_terbaik]
+            if field_data2["image_preprocessing__brightness"]
+            else None,
             "brightness_percent": field_data2[
                 "image_preprocessing__brightness_percent"
-            ][indeks_terbaik],
-            "contrast": field_data2["image_preprocessing__contrast"][indeks_terbaik],
+            ][indeks_terbaik]
+            if field_data2["image_preprocessing__brightness"]
+            else None,
+            "contrast": field_data2["image_preprocessing__contrast"][indeks_terbaik]
+            if field_data2["image_preprocessing__contrast"]
+            else None,
             "contrast_percent": field_data2["image_preprocessing__contrast_percent"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__contrast_percent"]
+            else None,
             "image_url": field_data2["image_preprocessing__image__image"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__image__image"]
+            else None,
             "image_pre_gray_url": field_data2[
                 "image_preprocessing__image_preprocessing_gray"
-            ][indeks_terbaik],
+            ][indeks_terbaik]
+            if field_data2["image_preprocessing__image_preprocessing_gray"]
+            else None,
             "image_pre_color_url": field_data2[
                 "image_preprocessing__image_preprocessing_color"
-            ][indeks_terbaik],
-            "image_seg": field_data2["image_segmented"][indeks_terbaik],
+            ][indeks_terbaik]
+            if field_data2["image_preprocessing__image_preprocessing_color"]
+            else None,
+            "image_seg": field_data2["image_segmented"][indeks_terbaik]
+            if field_data2["image_segmented"]
+            else None,
             "image_gt": field_data2["image_preprocessing__image_ground_truth"][
                 indeks_terbaik
-            ],
+            ]
+            if field_data2["image_preprocessing__image_ground_truth"]
+            else None,
         }
 
         self.extra_context["worst"] = {
             "index": indeks_terjelek,
-            "color": field_data["image__color"][indeks_terjelek],
-            "segmentation": field_data2["segmentation_type"][indeks_terjelek],
-            "width": field_data["image__width"][indeks_terjelek],
-            "height": field_data["image__height"][indeks_terjelek],
-            "size": field_data["image__size"][indeks_terjelek],
-            "channel": field_data["image__channel"][indeks_terjelek],
-            "format": field_data["image__format"][indeks_terjelek],
-            "dpi": field_data["image__dpi"][indeks_terjelek],
-            "distance": field_data["image__distance"][indeks_terjelek],
-            "uploader": field_data["image__uploader__username"][indeks_terjelek],
-            "f1_score": f1_score_data[indeks_terjelek],
-            "rand_score": rand_score_data[indeks_terjelek],
-            "jaccard_score": jaccard_score_data[indeks_terjelek],
-            "resize": field_data2["image_preprocessing__resize"][indeks_terjelek],
+            "color": field_data["image__color"][indeks_terjelek]
+            if field_data["image__color"]
+            else None,
+            "segmentation": field_data2["segmentation_type"][indeks_terjelek]
+            if field_data2["segmentation_type"]
+            else None,
+            "width": field_data["image__width"][indeks_terjelek]
+            if field_data["image__width"]
+            else None,
+            "height": field_data["image__height"][indeks_terjelek]
+            if field_data["image__height"]
+            else None,
+            "size": field_data["image__size"][indeks_terjelek]
+            if field_data["image__size"]
+            else None,
+            "channel": field_data["image__channel"][indeks_terjelek]
+            if field_data["image__channel"]
+            else None,
+            "format": field_data["image__format"][indeks_terjelek]
+            if field_data["image__format"]
+            else None,
+            "dpi": field_data["image__dpi"][indeks_terjelek]
+            if field_data["image__dpi"]
+            else None,
+            "distance": field_data["image__distance"][indeks_terjelek]
+            if field_data["image__distance"]
+            else None,
+            "uploader": field_data["image__uploader__username"][indeks_terjelek]
+            if field_data["image__uploader__username"]
+            else None,
+            "f1_score": f1_score_data[indeks_terjelek] if f1_score_data else None,
+            "mse": mse_data[indeks_terjelek] if mse_data else None,
+            "psnr": psnr_data[indeks_terjelek] if psnr_data else None,
+            "rand_score": rand_score_data[indeks_terjelek] if rand_score_data else None,
+            "jaccard_score": jaccard_score_data[indeks_terjelek]
+            if jaccard_score_data
+            else None,
+            "resize": field_data2["image_preprocessing__resize"][indeks_terjelek]
+            if field_data2["image_preprocessing__resize"]
+            else None,
             "resize_width": field_data2["image_preprocessing__resize_width"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__resize_width"]
+            else None,
             "resize_height": field_data2["image_preprocessing__resize_height"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__resize_height"]
+            else None,
             "resize_percent": field_data2["image_preprocessing__resize_percent"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__resize_percent"]
+            else None,
             "gaussian_filter": field_data2["image_preprocessing__gaussian_filter"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__gaussian_filter"]
+            else None,
             "gaussian_filter_size": field_data2[
                 "image_preprocessing__gaussian_filter_size"
-            ][indeks_terjelek],
+            ][indeks_terjelek]
+            if field_data2["image_preprocessing__gaussian_filter_size"]
+            else None,
             "median_filter": field_data2["image_preprocessing__median_filter"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__median_filter"]
+            else None,
             "median_filter_size": field_data2[
                 "image_preprocessing__median_filter_size"
-            ][indeks_terjelek],
+            ][indeks_terjelek]
+            if field_data2["image_preprocessing__median_filter_size"]
+            else None,
             "mean_filter": field_data2["image_preprocessing__mean_filter"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__mean_filter"]
+            else None,
             "mean_filter_size": field_data2["image_preprocessing__mean_filter_size"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__mean_filter_size"]
+            else None,
             "brightness": field_data2["image_preprocessing__brightness"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__brightness"]
+            else None,
             "brightness_percent": field_data2[
                 "image_preprocessing__brightness_percent"
-            ][indeks_terjelek],
-            "contrast": field_data2["image_preprocessing__contrast"][indeks_terjelek],
+            ][indeks_terjelek]
+            if field_data2["image_preprocessing__brightness_percent"]
+            else None,
+            "contrast": field_data2["image_preprocessing__contrast"][indeks_terjelek]
+            if field_data2["image_preprocessing__contrast"]
+            else None,
             "contrast_percent": field_data2["image_preprocessing__contrast_percent"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__contrast_percent"]
+            else None,
             "image_url": field_data2["image_preprocessing__image__image"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__image__image"]
+            else None,
             "image_pre_gray_url": field_data2[
                 "image_preprocessing__image_preprocessing_gray"
-            ][indeks_terjelek],
+            ][indeks_terjelek]
+            if field_data2["image_preprocessing__image_preprocessing_gray"]
+            else None,
             "image_pre_color_url": field_data2[
                 "image_preprocessing__image_preprocessing_color"
-            ][indeks_terjelek],
-            "image_seg": field_data2["image_segmented"][indeks_terjelek],
+            ][indeks_terjelek]
+            if field_data2["image_preprocessing__image_preprocessing_color"]
+            else None,
+            "image_seg": field_data2["image_segmented"][indeks_terjelek]
+            if field_data2["image_segmented"]
+            else None,
             "image_gt": field_data2["image_preprocessing__image_ground_truth"][
                 indeks_terjelek
-            ],
+            ]
+            if field_data2["image_preprocessing__image_ground_truth"]
+            else None,
         }
 
         # context chart_js
@@ -631,6 +781,8 @@ class ImageGraphColorClassView(ListView):
             "data_f1_score": f1_score_data,
             "data_jaccard_score": jaccard_score_data,
             "data_rand_score": rand_score_data,
+            "data_psnr": psnr_data,
+            "data_mse": mse_data,
             "labels": labels,
         }
 

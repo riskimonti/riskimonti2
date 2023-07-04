@@ -36,40 +36,6 @@ menus = []
 it_admin_menus = [
     create_menu("Dashboard", "/dashboard/", "fas fa-tachometer-alt", id="dashboard"),
     create_menu(
-        "Administrator",
-        "/admin/",
-        "fas fa-user-shield",
-        dropdown=False,
-        id="administrator",
-    ),
-    create_menu(
-        "Account",
-        "",
-        "fas fa-user",
-        dropdown=True,
-        id="account_detail",
-        submenus=[
-            create_menu(
-                "Account Profile",
-                "/account/",
-                "fas fa-user-circle",
-                id="account_detail",
-            ),
-            create_menu(
-                "Change Password",
-                "/account/change-password/",
-                "fas fa-key",
-                id="account_change_password",
-            ),
-        ],
-    ),
-    create_menu(
-        "Manage User",
-        "/manage/user/",
-        "fa-solid fa-users-between-lines",
-        id="manage_user",
-    ),
-    create_menu(
         "Images",
         "",
         "fas fa-image",
@@ -78,12 +44,6 @@ it_admin_menus = [
         submenus=[
             create_menu("Image Upload", "/image/upload/", "fas fa-upload", id="upload"),
             create_menu("Image All", "/image/", "fas fa-list", id="image_all"),
-            create_menu(
-                "Image by Uploader",
-                "/image/uploader/",
-                "fas fa-user",
-                id="image_by_uploader",
-            ),
             create_menu(
                 "Image Summary",
                 "/image/summary/",

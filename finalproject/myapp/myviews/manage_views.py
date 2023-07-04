@@ -8,8 +8,8 @@ from django.db.models import Q
 
 
 base_context = {
-    "content": "Welcome to VisionSlice!",
-    "contributor": "VisionSlice Team",
+    "content": "Welcome to TOKTIK!",
+    "contributor": "TOKTIK Team",
     "app_css": "myapp/css/styles.css",
     "app_js": "myapp/js/scripts.js",
     "menus": menus,
@@ -43,8 +43,8 @@ class ManageUsersClassView(ListView):
         "title": "Manage Users",
         "menus": menus,
         "logo": "myapp/images/Logo.png",
-        "content": "Welcome to VisionSlice!",
-        "contributor": "VisionSlice Team",
+        "content": "Welcome to TOKTIK!",
+        "contributor": "TOKTIK Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
     }

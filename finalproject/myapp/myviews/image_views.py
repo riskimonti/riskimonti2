@@ -50,8 +50,8 @@ class ImageUpdateView(UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Image Update"
-        context["contributor"] = "VisionSlice Team"
-        context["content"] = "Welcome to VisionSlice! Update Image"
+        context["contributor"] = "TOKTIK Team"
+        context["content"] = "Welcome to TOKTIK! Update Image"
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -184,8 +184,8 @@ class ImageDeleteView(DeleteView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Image Delete"
-        context["contributor"] = "VisionSlice Team"
-        context["content"] = "Welcome to VisionSlice! Delete Image"
+        context["contributor"] = "TOKTIK Team"
+        context["content"] = "Welcome to TOKTIK! Delete Image"
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -320,8 +320,8 @@ class ImageUploadView(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Image Upload"
-        context["contributor"] = "VisionSlice Team"
-        context["content"] = "Welcome to VisionSlice! Create Image"
+        context["contributor"] = "TOKTIK Team"
+        context["content"] = "Welcome to TOKTIK! Create Image"
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -375,8 +375,8 @@ class ImageSummaryView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Image Summary"
-        context["contributor"] = "VisionSlice Team"
-        context["content"] = "Welcome to VisionSlice! Image Summary"
+        context["contributor"] = "TOKTIK Team"
+        context["content"] = "Welcome to TOKTIK! Image Summary"
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -483,8 +483,8 @@ class ImageListView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Image List"
-        context["contributor"] = "VisionSlice Team"
-        context["content"] = "Welcome to VisionSlice!"
+        context["contributor"] = "TOKTIK Team"
+        context["content"] = "Welcome to TOKTIK!"
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -570,8 +570,8 @@ class ImageUploaderView(ListView):
         # Capitalize first letter of uploader
         context["title"] = "Image Uploader " + self.kwargs["uploader"].capitalize()
         context["kwargs_uploader"] = self.kwargs["uploader"]
-        context["contributor"] = "VisionSlice Team"
-        context["content"] = "Welcome to VisionSlice!"
+        context["contributor"] = "TOKTIK Team"
+        context["content"] = "Welcome to TOKTIK!"
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -620,9 +620,11 @@ class ImageDetailView(DetailView):
 
     def get_segmentation_data(self, segmentation_type):
         image_preprocessing = ImagePreprocessing.objects.filter(image=self.object)
+        type_dict = ["canny", "otsu"]
         if segmentation_type == "all":
             segmentation = Segmentation.objects.filter(
                 image_preprocessing__in=image_preprocessing,
+                segmentation_type__in=type_dict,
             )
         else:
             segmentation = Segmentation.objects.filter(
@@ -630,35 +632,21 @@ class ImageDetailView(DetailView):
                 segmentation_type=segmentation_type,
             )
 
-        segmentation = segmentation.order_by(
-            "-f1_score",
-            "-rand_score",
-            "-jaccard_score",
+        best = segmentation.order_by(
+            "-mse",
+            "-psnr",
         )
-        # Urutkan dari terendah ke tertinggi
-        segmentation = sorted(
-            segmentation,
-            key=lambda x: (
-                x.f1_score,
-                x.rand_score,
-                x.jaccard_score,
-            ),
-        )
+
+        best = best.last()
 
         labels = [seg.segmentation_type for seg in segmentation]
-        f1_score = [seg.f1_score for seg in segmentation]
-        rand_score = [seg.rand_score for seg in segmentation]
-        jaccard_score = [seg.jaccard_score for seg in segmentation]
-
-        # get 1st segmentation data as best
-        data_length = len(labels)
-        best = segmentation[data_length - 1]
+        mse = [seg.mse for seg in segmentation]
+        psnr = [seg.psnr for seg in segmentation]
 
         return {
             "labels": json.dumps(list(labels)),
-            "data_f1_score": json.dumps(list(f1_score)),
-            "data_rand_score": json.dumps(list(rand_score)),
-            "data_jaccard_score": json.dumps(list(jaccard_score)),
+            "data_mse": json.dumps(list(mse)),
+            "data_psnr": json.dumps(list(psnr)),
             "best": best,
         }
 
@@ -692,11 +680,14 @@ class ImageDetailView(DetailView):
         )
         type_dict = segmentation.values_list("segmentation_type", flat=True).distinct()
         type_dict = list(set(type_dict))
+        type_dict = ["canny", "otsu"]
         context["segmentation_type_dict"] = type_dict
         # print(segmentation_type_query)
         if segmentation_type_query is None or segmentation_type_query == "all":
             segmentation = (
-                Segmentation.objects.filter(image_preprocessing__in=image_list)
+                Segmentation.objects.filter(
+                    image_preprocessing__in=image_list, segmentation_type__in=type_dict
+                )
                 .prefetch_related("image_preprocessing")
                 .order_by("-created_at")
             )

@@ -89,15 +89,12 @@
                                 {% elif best.mean_filter %}Mean Filter
                                 {% endif %}
                         </span>
-                        filter. It results in a Jaccard Score of 
+                        filter. It results in a MSE of
                         <span class="text-red-500 font-bold">
-                            {{ best.jaccard_score }} % 
-                        </span> with a Rand Score of
+                            {{ best.mse }} dB
+                        </span> with a PSNR of
                         <span class="text-red-500 font-bold">
-                            {{ best.rand_score }} %
-                        </span> and an F1 Score of
-                        <span class="text-red-500 font-bold">
-                            {{ best.f1_score }} %
+                            {{ best.psnr }} dB
                         </span>.
                     </p>
                     <!-- image flex-1 -->
@@ -157,15 +154,12 @@
                                 {% elif worst.mean_filter %}Mean Filter
                                 {% endif %}
                         </span>
-                        filter. It results in a Jaccard Score of 
+                        filter. It results in a MSE of
                         <span class="text-red-500 font-bold">
-                            {{ worst.jaccard_score }} % 
+                            {{ worst.mse }} dB 
                         </span> with a Rand Score of
                         <span class="text-red-500 font-bold">
-                            {{ worst.rand_score }} %
-                        </span> and an F1 Score of
-                        <span class="text-red-500 font-bold">
-                            {{ worst.f1_score }} %
+                            {{ worst.psnr }} dB
                         </span>.
                     </p>
                     <!-- image flex-1 -->
@@ -223,6 +217,8 @@
     const data_f1_score = {{ chartjs.data_f1_score|safe }};
     const data_jaccard_score = {{ chartjs.data_jaccard_score|safe }};
     const data_rand_score = {{ chartjs.data_rand_score|safe }};
+    const data_mse = {{ chartjs.data_mse|safe }};
+    const data_psnr = {{ chartjs.data_psnr|safe }};
 
     const data = {
         labels: labels,
@@ -328,8 +324,8 @@
                 hidden: true
             }, 
             {
-                label: 'F1 Score',
-                data: data_f1_score,
+                label: 'MSE',	
+                data: data_mse,
                 // teal
                 borderColor: '#008080',
                 fill: false,
@@ -337,19 +333,10 @@
                 tension: 0.4
             }, 
             {
-                label: 'Jaccard Score',
-                data: data_jaccard_score,
+                label: 'PSNR',
+                data: data_psnr,
                 // orange
                 borderColor:  '#ffa500',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4
-            }, 
-            {
-                label: 'Rand Score',
-                data: data_rand_score,
-                // purple
-                borderColor:  '#800080',
                 fill: false,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4

@@ -98,8 +98,8 @@ class SegmentationClassView(ListView):
             "uploaders": uploaders,
             "colors": colors,
             "title": "Segmentation",
-            "contributor": "VisionSlice Team",
-            "content": "Welcome to VisionSlice! This is a website for image segmentation.",
+            "contributor": "TOKTIK Team",
+            "content": "Welcome to TOKTIK! This is a website for image segmentation.",
             "app_css": "myapp/css/styles.css",
             "app_js": "myapp/js/scripts.js",
             "logo": "myapp/images/Logo.png",
@@ -109,17 +109,13 @@ class SegmentationClassView(ListView):
         counter = 0
         for image in queryset:
             segmentation_types = [
-                "kmeans",
-                "adaptive",
                 "otsu",
-                "sobel",
-                "prewitt",
                 "canny",
             ]
             segmentation_count = image.segmentation_results.filter(
                 segmentation_type__in=segmentation_types
             ).count()
-            segmented = segmentation_count == 90
+            segmented = segmentation_count == 30
             image.segmented = segmented
             image.segmented_count = (
                 segmentation_count  # Add the "segmented_count" variable
@@ -193,10 +189,10 @@ class SegmentationDetailClassView(DetailView):
         self.customize_context(context)
 
         context["title"] = "Segmentation Detail"
-        context["contributor"] = "VisionSlice Team"
+        context["contributor"] = "TOKTIK Team"
         context[
             "content"
-        ] = "Welcome to VisionSlice! This is a website for image segmentation."
+        ] = "Welcome to TOKTIK! This is a website for image segmentation."
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -246,10 +242,10 @@ class SegmentationDeleteClassView(DeleteView):
         self.customize_context(context)
 
         context["title"] = "Segmentation Delete"
-        context["contributor"] = "VisionSlice Team"
+        context["contributor"] = "TOKTIK Team"
         context[
             "content"
-        ] = "Welcome to VisionSlice! This is a website for image segmentation."
+        ] = "Welcome to TOKTIK! This is a website for image segmentation."
         context["app_css"] = "myapp/css/styles.css"
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
@@ -459,8 +455,8 @@ class SegmentationSummaryClassView(ListView):
             "uploaders": uploaders,
             "colors": colors,
             "title": "Segmentation Summary",
-            "contributor": "VisionSlice Team",
-            "content": "Welcome to VisionSlice! This is a website for image segmentation.",
+            "contributor": "TOKTIK Team",
+            "content": "Welcome to TOKTIK! This is a website for image segmentation.",
             "app_css": "myapp/css/styles.css",
             "app_js": "myapp/js/scripts.js",
             "logo": "myapp/images/Logo.png",

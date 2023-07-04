@@ -7,8 +7,8 @@ from django.views.decorators.csrf import csrf_protect
 
 class SystemBaseView(View):
     base_context = {
-        "content": "Welcome to VisionSlice!",
-        "contributor": "VisionSlice Team",
+        "content": "Welcome to TOKTIK!",
+        "contributor": "TOKTIK Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "logo": "myapp/images/Logo.png",

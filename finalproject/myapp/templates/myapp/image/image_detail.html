@@ -116,9 +116,8 @@
                     <p>
                         The Best Way to Segmentation this Image is 
                         <span class="text-red-500 font-bold">{{ chartjs.best.segmentation_type|title }}</span> 
-                        that has score of F1-Score <span class="text-red-500 font-bold">{{ chartjs.best.f1_score|floatformat:2 }}</span> 
-                        and Rand Score <span class="text-red-500 font-bold">{{ chartjs.best.rand_score|floatformat:2 }}</span> 
-                        and Jaccard Score <span class="text-red-500 font-bold">{{ chartjs.best.jaccard_score|floatformat:2 }}</span>. 
+                        that has score of MSE <span class="text-red-500 font-bold">{{ chartjs.best.mse|floatformat:2 }}</span> 
+                        and PSNR <span class="text-red-500 font-bold">{{ chartjs.best.psnr|floatformat:2 }}</span> . 
                         Image is Preprocessing with resize image to <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.resize_percent|intcomma }}%</span> 
                         and brightness ajustment to <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.brightness_percent|intcomma }}%</span> 
                         and contrast ajustment to <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.contrast_percent|intcomma }}%</span>. 
@@ -278,13 +277,10 @@
                                     </span>
                                     <!-- span score -->
                                     <span class="px-2 py-1 rounded-md bg-gray-200 text-gray-700 text-xs">
-                                        F1: {{ seg.f1_score|floatformat:2 }}
+                                        MSE: {{ seg.mse|floatformat:2 }}
                                     </span>
                                     <span class="px-2 py-1 rounded-md bg-gray-200 text-gray-700 text-xs">
-                                        Jaccard: {{ seg.jaccard_score|floatformat:2 }}
-                                    </span>
-                                    <span class="px-2 py-1 rounded-md bg-gray-200 text-gray-700 text-xs">
-                                        Rand: {{ seg.rand_score|floatformat:2 }}
+                                        PSNR: {{ seg.psnr|floatformat:2 }}
                                     </span>
                                 </td>
                                 <td class="border px-2 py-1 text-xs segmentationView">{{ seg.created_at|naturaltime }}</td>
@@ -420,22 +416,15 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: {{ chartjs.labels | safe }},
             datasets: [
                 {
-                    label: 'F1 Score',
-                    data: {{ chartjs.data_f1_score | safe }},
+                    label: 'MSE',
+                    data: {{ chartjs.data_mse | safe }},
                     borderWidth: 1,
                     tension: 0,
                     fill: true,
                 },
                 {
-                    label: 'Rand Score',
-                    data: {{ chartjs.data_rand_score | safe }},
-                    borderWidth: 1,
-                    tension: 0,
-                    fill: true,
-                },
-                {
-                    label: 'Jaccard Score',
-                    data: {{ chartjs.data_jaccard_score | safe }},
+                    label: 'PSNR',
+                    data: {{ chartjs.data_psnr | safe }},
                     borderWidth: 1,
                     tension: 0,
                     fill: true,
@@ -464,23 +453,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     mode: 'index',
                     intersect: false,
                 },
-                annotation: {
-                    annotations: {
-                        highestDataPoint: {
-                            type: 'line',
-                            mode: 'vertical',
-                            scaleID: 'y',
-                            value: findMaxValue({{ chartjs.data_f1_score | safe }}),
-                            borderColor: 'red',
-                            borderWidth: 2,
-                            label: {
-                                enabled: true,
-                                content: 'Tertinggi',
-                                position: 'top'
-                            }
-                        }
-                    }
-                }
             }
         }
     });

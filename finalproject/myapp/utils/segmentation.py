@@ -21,7 +21,7 @@ from sklearn.metrics import (
 
 
 def get_segmentation_results_data(image):
-    segmentation_types = ["kmeans", "adaptive", "otsu", "sobel", "prewitt", "canny"]
+    segmentation_types = ["otsu", "canny"]
 
     segmentation_results = Segmentation.objects.filter(
         image_preprocessing__image=image, segmentation_type__in=segmentation_types
@@ -320,6 +320,7 @@ def calculate_scores(ground_truth, segmented, type, average="binary", zero_divis
         )
     )
     # print(scores)
+    print("{}{}{}".format("Scores for ", type, " segmentation calculated"))
     return scores
 
 

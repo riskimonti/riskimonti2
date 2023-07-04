@@ -2,9 +2,9 @@
     <!-- sidebar Menu menu list with icons and text dropdown -->
     <ul class="space-y-2">
     {% for menu in menus %}
-        <li class="flex flex-row justify-between items-center space-x-2 hover:bg-teal-200 rounded-md p-2 cursor-pointer" onclick="toggleDropdown('{{ menu.id }}')">
+        <li class="flex flex-row justify-between items-center space-x-2 hover:bg-blue-200 rounded-md p-2 cursor-pointer" onclick="toggleDropdown('{{ menu.id }}')">
             <div>
-                <i class="{{ menu.icon }} text-teal-500 text-lg mr-2"></i>
+                <i class="{{ menu.icon }} text-blue-500 text-lg mr-2"></i>
                 {% if menu.url == "" %}
                 <span class="text-gray-700 hover:text-gray-900" target="_blank">
                     {{ menu.name }}
@@ -27,9 +27,9 @@
         {% if menu.submenus %}
         <ul id="dropdown-menu-{{ menu.id }}" class="flex-col space-y-2 pl-4 py-2 hidden" >
             {% for submenu in menu.submenus %}
-            <li class="flex flex-row justify-between items-center space-x-2 hover:bg-teal-200 rounded-md p-2 cursor-pointer">
+            <li class="flex flex-row justify-between items-center space-x-2 hover:bg-blue-200 rounded-md p-2 cursor-pointer">
                 <div>
-                    <i class="{{ submenu.icon }} text-teal-500 text-lg mr-2"></i>
+                    <i class="{{ submenu.icon }} text-blue-500 text-lg mr-2"></i>
                     <a href="{{ submenu.url }}" class="text-gray-700 hover:text-gray-900" {% if submenu.id == 'blog' %} target="_blank" {% endif %}>
                         {{ submenu.name }}
                     </a>
