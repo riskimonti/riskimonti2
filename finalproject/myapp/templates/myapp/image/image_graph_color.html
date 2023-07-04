@@ -1,0 +1,550 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10 mb-48 pb-20">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">
+            <div class="flex flex-row justify-between items-center">
+                <div class="flex flex-col space-y-2">
+                    <p class="text-gray-700">Graph of Image upload per day</p>
+                </div>
+                <div class="flex flex-row justify-between items-center mb-2">
+                    
+                    <div class="flex flex-row space-x-2 w-auto">
+                        <!-- button export Segmentation -->
+                        <button onclick="printDiv('divPrint')" class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2">
+                            <i class="fas fa-print"></i>
+                            <span>Print</span>
+                        </button>
+                        <!-- button selected Segmentation -->
+                        <form class="flex flex-row justify-center items-center space-x-2 w-auto" action="" method="GET">
+                            <!-- input select option -->
+                            <select name="search" class="flex flex-row justify-center items-center rounded-md px-4 py-2 text-gray-700 w-60">
+                                <option value="all" {% if request.GET.search == 'all' %} selected {% endif %}>All</option>
+                                {% for color in color_dict %}
+                                    <option value="{{ color }}" {% if request.GET.search == color %} selected {% endif %}>{{ color }}</option>
+                                {% endfor %}
+                            </select>
+                            <!-- button selected Segmentation -->
+                            <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                                <i class="fas fa-filter"></i>
+                                <span class="ml-2">Filter</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col space-y-2" id="divPrint">
+                <h1 class="text-3xl font-bold text-gray-700 hidden m-4" id="H1divPrint">Segmentation Image Result</h1>
+                <div class="container segmentationView" id="masukkanboy">
+                    <canvas id="myChart" height="100px"></canvas>
+                </div>
+                <!-- Result -->
+                <div class="flex flex-col space-y-2">
+                    <h1 class="text-xl font-bold text-gray-700">Result Best Segmentation</h1>
+                    <p class="space-y-2 text-gray-700 space-x-2">
+                        From the uploaded image, there are 
+                        {% if total_data < 1 %} <span class="text-red-500 font-bold">no</span> 
+                        {% else %} <span class="text-red-500 font-bold"> {{ total_data|floatformat:0 }}</span>
+                        {% endif %} 
+                        uploaded images. The uploaded images have different colors: 
+                        {% if request.GET.search == 'all' %} <span class="text-red-500 font-bold">various</span> 
+                        {% elif request.GET.search %} <span class="text-red-500 font-bold">{{ request.GET.search }}</span> 
+                        {% else %} <span class="text-red-500 font-bold">various</span> {% endif %}. 
+                        The best image segmentation is with a background color of <span class="text-red-500 font-bold">{{ best.color }}</span> using segmentation 
+                        <span class="text-red-500 font-bold">
+                            {{ best.segmentation }}</span> with resized image preprocessing
+                        <span class="text-red-500 font-bold">
+                            {{ best.resize_percent }} %
+                        </span> and adjusted brightness
+                        <span class="text-red-500 font-bold">
+                            {{ best.brightness_percent }} %
+                        </span> as well as contrast adjustment
+                        <span class="text-red-500 font-bold">
+                            {{ best.contrast_percent }} %
+                        </span> and the distance between the captured image and the object is
+                        <span class="text-red-500 font-bold">
+                            {{ best.distance }} cm
+                        </span> using the 
+                        <span class="text-red-500 font-bold">
+                                {% if best.gaussian_filter %}Gaussian Filter
+                                {% elif best.median_filter %}Median Filter
+                                {% elif best.mean_filter %}Mean Filter
+                                {% endif %}
+                        </span>
+                        filter. It results in a Jaccard Score of 
+                        <span class="text-red-500 font-bold">
+                            {{ best.jaccard_score }} % 
+                        </span> with a Rand Score of
+                        <span class="text-red-500 font-bold">
+                            {{ best.rand_score }} %
+                        </span> and an F1 Score of
+                        <span class="text-red-500 font-bold">
+                            {{ best.f1_score }} %
+                        </span>.
+                    </p>
+                    <!-- image flex-1 -->
+                    <div class="flex flex-row justify-between items-center space-x-2">
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image</p>
+                            <img src="/{{ best.image_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Pre Color</p>
+                            <img src="/{{ best.image_pre_color_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Pre Gray</p>
+                            <img src="/{{ best.image_pre_gray_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Ground Truth</p>
+                            <img src="/{{ best.image_gt }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Segmented</p>
+                            <img src="/{{ best.image_seg }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                    </div>
+                </div>
+                <!-- Result -->
+                <div class="flex flex-col space-y-2">
+                    <h1 class="text-xl font-bold text-gray-700">Result Worst Segmentation</h1>
+                    <p class="space-y-2 text-gray-700 space-x-2">
+                        From the uploaded image, there are 
+                        {% if total_data < 1 %} <span class="text-red-500 font-bold">no</span> 
+                        {% else %} <span class="text-red-500 font-bold"> {{ total_data|floatformat:0 }}</span>
+                        {% endif %} 
+                        uploaded images. The uploaded images have different colors: 
+                        {% if request.GET.search == 'all' %} <span class="text-red-500 font-bold">various</span> 
+                        {% elif request.GET.search %} <span class="text-red-500 font-bold">{{ request.GET.search }}</span> 
+                        {% else %} <span class="text-red-500 font-bold">various</span> {% endif %}. 
+                        The worst image segmentation is with a background color of <span class="text-red-500 font-bold">{{ worst.color }}</span> using segmentation 
+                        <span class="text-red-500 font-bold">
+                            {{ worst.segmentation }}</span> with resized image preprocessing
+                        <span class="text-red-500 font-bold">
+                            {{ worst.resize_percent }} %
+                        </span> and adjusted brightness
+                        <span class="text-red-500 font-bold">
+                            {{ worst.brightness_percent }} %
+                        </span> as well as contrast adjustment
+                        <span class="text-red-500 font-bold">
+                            {{ worst.contrast_percent }} %
+                        </span> and the distance between the captured image and the object is
+                        <span class="text-red-500 font-bold">
+                            {{ worst.distance }} cm
+                        </span> using the 
+                        <span class="text-red-500 font-bold">
+                                {% if worst.gaussian_filter %}Gaussian Filter
+                                {% elif worst.median_filter %}Median Filter
+                                {% elif worst.mean_filter %}Mean Filter
+                                {% endif %}
+                        </span>
+                        filter. It results in a Jaccard Score of 
+                        <span class="text-red-500 font-bold">
+                            {{ worst.jaccard_score }} % 
+                        </span> with a Rand Score of
+                        <span class="text-red-500 font-bold">
+                            {{ worst.rand_score }} %
+                        </span> and an F1 Score of
+                        <span class="text-red-500 font-bold">
+                            {{ worst.f1_score }} %
+                        </span>.
+                    </p>
+                    <!-- image flex-1 -->
+                    <div class="flex flex-row justify-between items-center space-x-2">
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image</p>
+                            <img src="/{{ worst.image_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Pre Color</p>
+                            <img src="/{{ worst.image_pre_color_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Pre Gray</p>
+                            <img src="/{{ worst.image_pre_gray_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Ground Truth</p>
+                            <img src="/{{ worst.image_gt }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                        <div class="flex-1 flex-col space-y-2">
+                            <p class="text-gray-700">Image Segmented</p>
+                            <img src="/{{ worst.image_seg }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block chartjs%}
+<script>
+    const labels = {{ chartjs.labels|safe }};
+    const data_color = {{ chartjs.data_color|safe }};
+    const dict_color = {{ chartjs.dict_color|safe }};
+    const data_width = {{ chartjs.data_width|safe }};
+    const dict_width = {{ chartjs.dict_width|safe }};
+    const data_height = {{ chartjs.data_height|safe }};
+    const dict_height = {{ chartjs.dict_height|safe }};
+    const data_size = {{ chartjs.data_size|safe }};
+    const dict_size = {{ chartjs.dict_size|safe }};
+    const data_channel = {{ chartjs.data_channel|safe }};
+    const dict_channel = {{ chartjs.dict_channel|safe }};
+    const data_format = {{ chartjs.data_format|safe }};
+    const dict_format = {{ chartjs.dict_format|safe }};
+    const data_dpi = {{ chartjs.data_dpi|safe }};
+    const dict_dpi = {{ chartjs.dict_dpi|safe }};
+    const data_distance = {{ chartjs.data_distance|safe }};
+    const dict_distance = {{ chartjs.dict_distance|safe }};
+    const data_uploader = {{ chartjs.data_uploader|safe }};
+    const dict_uploader = {{ chartjs.dict_uploader|safe }};
+    const data_segmentation = {{ chartjs.data_segmentation|safe }};
+    const dict_segmentation = {{ chartjs.dict_segmentation|safe }};
+    const data_f1_score = {{ chartjs.data_f1_score|safe }};
+    const data_jaccard_score = {{ chartjs.data_jaccard_score|safe }};
+    const data_rand_score = {{ chartjs.data_rand_score|safe }};
+
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Color',
+                data: data_color,
+                // red
+                borderColor:  '#ff0000',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Width',
+                data: data_width,
+                // blue
+                borderColor:  '#0000ff',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Height',
+                data: data_height,
+                // green
+                borderColor:  '#00ff00',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Size',
+                data: data_size,
+                // yellow
+                borderColor:  '#ffff00',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Channel',
+                data: data_channel,
+                // purple
+                borderColor:  '#800080',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Format',
+                data: data_format,
+                // orange
+                borderColor:  '#ffa500',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'DPI',
+                data: data_dpi,
+                // pink
+                borderColor:  '#ff69b4',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Distance',
+                data: data_distance,
+                // brown
+                borderColor:  '#a52a2a',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Uploader',
+                data: data_uploader,
+                // gray
+                borderColor:  '#808080',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            },
+            {
+                label: 'Segmentation',
+                data: data_segmentation,
+                // red
+                borderColor:  '#ff0000',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4,
+                hidden: true
+            }, 
+            {
+                label: 'F1 Score',
+                data: data_f1_score,
+                // teal
+                borderColor: '#008080',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            }, 
+            {
+                label: 'Jaccard Score',
+                data: data_jaccard_score,
+                // orange
+                borderColor:  '#ffa500',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            }, 
+            {
+                label: 'Rand Score',
+                data: data_rand_score,
+                // purple
+                borderColor:  '#800080',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+        ]
+    };
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            animations: {
+                tension: {
+                    duration: 1000,
+                    easing: 'linear',
+                    from: 1,
+                    to: 0,
+                    loop: true
+                }
+            },
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    display: true
+                },
+                x: {
+                    beginAtZero: true,
+                    display: true
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Segmentation Graph',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    usePointStyle: true,
+                    callbacks: {
+                        labelPointStyle: function(context) {
+                            if (context.dataset.label == 'Color') {
+                                return {
+                                    pointStyle: 'circle',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Width') {
+                                return {
+                                    pointStyle: 'triangle',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Height') {
+                                return {
+                                    pointStyle: 'rect',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Size') {
+                                return {
+                                    pointStyle: 'crossRot',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Channel') {
+                                return {
+                                    pointStyle: 'star',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Format') {
+                                return {
+                                    pointStyle: 'rectRot',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'DPI') {
+                                return {
+                                    pointStyle: 'triangle',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Distance') {
+                                return {
+                                    pointStyle: 'rect',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Uploader') {
+                                return {
+                                    pointStyle: 'circle',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Segmentation') {
+                                return {
+                                    pointStyle: 'crossRot',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'F1 Score') {
+                                return {
+                                    pointStyle: 'crossRot',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Jaccard Score') {
+                                return {
+                                    pointStyle: 'crossRot',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Rand Score') {
+                                return {
+                                    pointStyle: 'crossRot',
+                                    rotation: 0
+                                };
+                            }
+                        },
+                        label: function(context) {
+                            
+                            var label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                // label += context.parsed.y + ' %';
+                                // change value context.parsed.y to dict
+                                if (context.dataset.label == 'Color') {
+                                    label += dict_color[context.parsed.y];
+                                } else if (context.dataset.label == 'Width') {
+                                    label += dict_width[context.parsed.y];
+                                } else if (context.dataset.label == 'Height') {
+                                    label += dict_height[context.parsed.y];
+                                } else if (context.dataset.label == 'Size') {
+                                    if (dict_size[context.parsed.y] > 1024) {
+                                        label += dict_size[context.parsed.y] / 1024 + ' MB';
+                                    } else {
+                                        label += dict_size[context.parsed.y] + ' KB';
+                                    }
+                                } else if (context.dataset.label == 'Channel') {
+                                    label += dict_channel[context.parsed.y];
+                                } else if (context.dataset.label == 'Format') {
+                                    label += dict_format[context.parsed.y];
+                                } else if (context.dataset.label == 'DPI') {
+                                    label += dict_dpi[context.parsed.y];
+                                } else if (context.dataset.label == 'Distance') {
+                                    label += dict_distance[context.parsed.y];
+                                } else if (context.dataset.label == 'Uploader') {
+                                    label += dict_uploader[context.parsed.y];
+                                } else if (context.dataset.label == 'Segmentation') {
+                                    label += dict_segmentation[context.parsed.y];
+                                } else if (context.dataset.label == 'F1 Score') {
+                                    label += context.parsed.y;
+                                } else if (context.dataset.label == 'Jaccard Score') {
+                                    label += context.parsed.y;
+                                } else if (context.dataset.label == 'Rand Score') {
+                                    label += context.parsed.y;
+                                }
+                            }
+                            return label;
+                        },
+                    },
+                    position: 'nearest',
+                },
+            }
+        }
+    });
+  });
+</script>
+{% endblock chartjs %}
+{% block scriptcustom %} 
+<script>
+    function printDiv(divId) {
+        // display block all id H1divPrint
+        document.getElementById("H1divPrint").style.display = "block";
+        
+        // Hide all elements with the class "segmentationView"
+        var segmentationViews = document.getElementsByClassName("segmentationView");
+        var originalDisplayStyles = {};
+
+        for (var i = 0; i < segmentationViews.length; i++) {
+            originalDisplayStyles[i] = segmentationViews[i].style.display;
+            segmentationViews[i].style.display = "none";
+        }
+
+        var printContents = document.getElementById(divId).innerHTML;
+        var originalContents = document.body.innerHTML;
+        
+        document.body.innerHTML = printContents;
+        window.print();
+
+        // Restore original content after printing is done
+        document.body.innerHTML = originalContents;
+        
+        // Show all elements with the class "segmentationView" again
+        for (var i = 0; i < segmentationViews.length; i++) {
+            segmentationViews[i].style.display = originalDisplayStyles[i];
+        }
+    }
+    
+    // Reload the page after printing is done
+    window.addEventListener("afterprint", function() {
+        location.reload();
+    });
+</script>
+{% endblock scriptcustom %}

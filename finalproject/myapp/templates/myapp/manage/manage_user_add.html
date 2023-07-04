@@ -1,0 +1,176 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10 pb-20 mb-80">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">  
+            <div class="flex flex-col space-y-2">
+                <div class="flex flex-row justify-between items-center">
+                    <div class="flex flex-row space-x-2">
+                        <div class="flex flex-col space-y-1">
+                            <h1 class="text-lg font-bold text-gray-700">Add New User Personal Information</h1>
+                            <p class="text-sm text-gray-500">Set up your personal information, and apply to join the community.</p>
+                        </div>
+                    </div>
+                </div>
+                {% if form.errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Oops!</strong>
+                        <ul class="list-disc list-inside">
+                            {% for field in form %}
+                                {% if field.errors %}
+                                    <li class="text-red-700"><strong>{{ field.label }}</strong> : {{ field.errors|striptags }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <!-- Button times-->
+                        <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                            <i class="fas fa-times"></i>
+                            <span class="sr-only">Close</span>
+                        </button>
+                    </div>
+                {% endif %}
+                <!-- content Image Profile and form profile -->
+                <form class="flex w-full flex-col space-y-2 items-start" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="flex flex-col space-y-1 w-full">
+                        <label class="text-sm font-semibold text-gray-700">Photo</label>
+                        <div class="flex flex-row space-x-2">
+                            <div class="flex flex-col space-y-1">
+                                <!-- image profile default if not change /static/iamges'/profile_pics/default.jpg -->
+                                <img src="{% if form.profile_pic.value %}{{ form.profile_pic.url.value }}{% else %}{% static 'images/profile_pics/default.jpg' %}{% endif %}" class="w-20 h-20 rounded-full object-cover" alt="profile">
+                            </div>
+                        </div>
+                        <div class="flex flex-row space-x-2">
+                            <div class="flex flex-col space-y-1">
+                                <input type="file" class="block w-full text-sm text-slate-500 rounded-md
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-blue-50 file:text-blue-700
+                                hover:file:bg-blue-100
+                                " name="profile_pic"/>
+                            </div>
+                        </div>
+                    </div>
+                    <from class="flex flex-col space-y-2 w-full">
+                        <h2 class="text-lg font-bold text-gray-700">Profile information</h2>
+                        <!-- username -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700"> Username <span class="text-red-500">*</span></label>
+                            <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            " placeholder="Choose a username" value="{{ form.username.value }}" name="username"/>
+                        </div>
+                        <!-- email -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Email <span class="text-red-500">*</span></label>
+                            <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            " placeholder="Your email address"  value="{{ form.email.value }}" name="email"/>
+                        </div>
+                        <!-- first name and last name -->
+                        <div class="flex flex-row space-x-2">
+                            <div class="flex flex-col space-y-1 w-1/2">
+                                <label class="text-sm font-semibold text-gray-700">First name <span class="text-red-500">*</span></label>
+                                <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-blue-50 file:text-blue-700
+                                hover:file:bg-blue-100
+                                " placeholder="Your first name" value="{{ form.first_name.value }}" name="first_name"/>
+                            </div>
+                            <div class="flex flex-col space-y-1 w-1/2">
+                                <label class="text-sm font-semibold text-gray-700">Last name <span class="text-red-500">*</span></label>
+                                <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-blue-50 file:text-blue-700
+                                hover:file:bg-blue-100
+                                " placeholder="Your last name" value="{{ form.last_name.value }}" name="last_name"/>
+                            </div>
+                        </div>
+                        <h2 class="text-lg font-bold text-gray-700">Personal information</h2>
+                        <!-- phone number -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Phone number <span class="text-red-500">*</span></label>
+                            <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            " placeholder="Your phone number" value="{{ form.userprofile.phone_number.value }} " name="phone_number"/>
+                        </div>
+                        <!-- address -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Address <span class="text-red-500">*</span></label>
+                            <textarea class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            " placeholder="Your address" name="address">{{ form.userprofile.address.value }}</textarea>
+                        </div>
+                        <!-- Date of birth -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Date of birth <span class="text-red-500">*</span></label>
+                            <input type="date" class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            " placeholder="Your date of birth" value="{{ form.userprofile.date_of_birth.value|date:'Y-m-d' }}"  name="date_of_birth"/>
+                        </div>
+                        <!-- Bio -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Bio <span class="text-red-500">*</span></label>
+                            <textarea class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            " placeholder="Your bio" rows="5" name="bio">{{ form.userprofile.bio.value }}</textarea>
+                        <div class="flex flex-row-reverse pt-4">
+                            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+                                <i class="fas fa-save"></i>
+                                Save changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

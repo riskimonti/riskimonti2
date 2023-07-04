@@ -1,0 +1,119 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+
+{% block content %}
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10 mb-48">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <!-- button back -->
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">
+            <!-- list Image Upload -->
+            <div class="flex flex-row justify-between items-center">
+                <div class="flex flex-row space-x-2">
+                    <div class="flex flex-col space-y-1">
+                        <h1 class="text-lg font-bold text-gray-700">Image Delete Confirmation</h1>
+                        <p class="text-sm text-gray-500">
+                            <i class="fas fa-user"></i>	
+                            <span class="ml-2">Uploaded by {{ image.uploader|title }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- list Images Uploaded -->
+            <div class="flex flex-row flex-wrap justify-start items-start space-x-2">
+                <div class="flex flex-col space-y-2">
+                    <div class="flex flex-row justify-center items-center">
+                        <img src="{{ image.image.url }}" class="w-40 h-4w-40 object-cover rounded-md shadow-md">
+                    </div>
+                    <div class="flex flex-row justify-center items-center">
+                        <a href="{{ image.image.url }}" class="text-sm text-blue-500 hover:text-blue-700">
+                            <i class="fas fa-eye"></i>
+                            <span class="ml-2">View Full Image</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Two column with shadow -->
+                <div class="flex flex-col space-y-2">
+                    <h1 class="text-lg font-bold text-gray-700">{{ image.slug }}</h1>
+                    <div class="flex flex-row space-x-2">
+                        <div class="flex flex-col space-y-1">
+                            <p class="text-sm text-gray-500">
+                                <i class="fas fa-user"></i>
+                                <span class="ml-2">Uploaded by {{ image.uploader|title }}</span>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                <i class="fas fa-calendar"></i>
+                                <span class="ml-2">Uploaded at {{ image.created_at|date:"d F Y" }}</span>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                <i class="fas fa-clock"></i>
+                                <span class="ml-2">Uploaded at {{ image.created_at|time:"H:i:s" }}</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            <p class="text-sm text-gray-500">
+                                <i class="fas fa-file"></i>
+                                <span class="ml-2">File Size {{ image.image.size|filesizeformat }}</span>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                <i class="fas fa-image"></i>
+                                <span class="ml-2">Image Size {{ image.image.width }} x {{ image.image.height }} px</span>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                <i class="fas fa-image"></i>
+                                <span class="ml-2">Image Channel {{ image.channel }} Channel</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            <p class="text-sm text-gray-500">
+                                <i class="fa-solid fa-icons"></i>
+                                <span class="ml-2">Image Type {{ image.format }}</span>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                <i class="fa-solid fa-camera-retro"></i>
+                                <span class="ml-2">Image DPI {{ image.dpi }}</span>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                <i class="fa-solid fa-people-arrows"></i>
+                                <span class="ml-2">Image Distance {{ image.distance }}</span>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                <i class="fa-solid fa-palette"></i>
+                                <span class="ml-2">Image Color {{ image.color }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Delete -->
+            <div class="flex flex-row justify-end items-center space-x-2">
+                <form action="{% url 'myapp:image_delete' image.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="flex flex-row justify-center items-center px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded-md shadow-md">
+                        <i class="fas fa-trash"></i>
+                        <span class="ml-2">Delete</span>
+                    </button>
+                </form>
+                <a href="{% url 'myapp:image_list' %}" class="flex flex-row justify-center items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md shadow-md">
+                    <i class="fas fa-times"></i>
+                    <span class="ml-2">Cancel</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,71 @@
+{% load static %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    {% tailwind_css %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    
+    <link rel="stylesheet" href="{% static app_css %}">
+</head>
+<body class="font-inter bg-gray-100">
+    <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none cursor-pointer open-modal" id="open-modal">
+        Open Modal
+    </button>
+    <div class="h-screen w-full fixed left-0 top-0 hidden justify-center items-center bg-gray-900 bg-opacity-50 show-modal" id="show-modal">
+        <!-- modal -->
+        <div class="bg-white rounded-md shadow-md w-96">
+            <!-- modal header -->
+            <div class="flex justify-between items-center px-4 py-2 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-700">Modal Title</h3>
+                <button class="text-gray-600 focus:outline-none close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- modal body -->
+            <div class="px-4 py-2">
+                <p class="text-sm text-gray-700">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum, voluptates. Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum, voluptates.
+                </p>
+            </div>
+            <!-- modal footer -->
+            <div class="flex justify-end items-center w-full px-4 py-2 bg-gray-100 rounded-b-md">
+                <a class="px-4 py-2 bg-red-300 text-red-700 rounded-md hover:bg-red-400 focus:outline-none cursor-pointer close-modal" id="close-modal">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <a class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none cursor-pointer ml-2">
+                    <i class="fas fa-check"></i> Ok
+                </a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" >
+        const openModal = document.querySelector('.open-modal');
+        const showModal = document.querySelector('.show-modal');
+        const closeModal = document.querySelectorAll('.close-modal');
+        
+        openModal.addEventListener('click', () => {
+            showModal.classList.remove('hidden');
+            showModal.classList.add('flex');
+        });
+
+        closeModal.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                showModal.classList.add('hidden');
+                showModal.classList.remove('flex');
+            });
+        });
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "myapp/core_base.html" %}
+{% load static %}
+
+{% block container %}
+
+<div class="flex flex-col justify-center items-center">
+    <div class="flex flex-col justify-center items-center gap-4">
+        <h1 class="text-5xl font-bold text-gray-900">Welcome to
+            VISION<span class="bg-gradient-to-t from-fuchsia-500 to-stone-400 bg-clip-text text-transparent">SLICE</span>
+        </h1>
+        {% if messages %}
+        <div class="flex flex-col justify-center items-center gap-4">
+            {% for message in messages %}
+            <div class="bg-{{ message.tags }}-400 text-white px-4 py-2 rounded mx-2">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <p class="text-1xl text-gray-600 px-24 text-center">
+            VisionSlice is a platform that provides services to help you simulate image segmentation using 
+            <span class="bg-gradient-to-t from-red-500 to-red-400 bg-clip-text text-transparent">K-Means</span>dan 
+            <span class="bg-gradient-to-t from-red-500 to-red-400 bg-clip-text text-transparent">Adapative Thresholding</span> algorithms. As an initial identification, you can choose one of the two methods to perform image segmentation.
+        </p>
+        <div class="flex flex-row justify-center items-center">
+            <a href="{% url 'myapp:signin' %}" class="bg-blue-400 text-white px-4 py-2 rounded mx-2 hover:bg-blue-600">
+                <i class="fas fa-sign-in-alt"></i>
+                <span class="ml-2">Sign In</span>
+            </a>
+            <a href="{% url 'myapp:signup' %}" class="bg-blue-400 text-white px-4 py-2 rounded mx-2 hover:bg-blue-600">
+                <i class="fas fa-user-plus"></i>
+                <span class="ml-2">Sign Up</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock container %}

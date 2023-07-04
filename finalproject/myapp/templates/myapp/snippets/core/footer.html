@@ -1,0 +1,35 @@
+<!-- text footer justify end -->
+<footer class=" text-center py-4  shadow-md w-full">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap items-center justify-center md:justify-between">
+            <div class="w-full md:w-4/12 px-4">
+                <div class="text-sm text-gray-600 py-1 text-left">
+                    © 2023 <a href="https://www.ikimukti.com" class="text-gray-600 hover:text-gray-900">Ikimukti</a>. All rights reserved.
+                </div>
+            </div>
+            <div class="w-full md:w-8/12 px-4">
+                <ul class="flex flex-wrap list-none md:justify-end  justify-center">
+                    <li>
+                        <a href="https://www.ikimukti.com" class="text-gray-700 hover:text-gray-900 text-sm block py-1 px-3">Ikimukti</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'myapp:about' %}"
+                        class="text-gray-700 hover:text-gray-900 text-sm block py-1 px-3">About Us</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'myapp:blog' %}"
+                        class="text-gray-700 hover:text-gray-900 text-sm block py-1 px-3">Blog</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'myapp:contact' %}"
+                        class="text-gray-700 hover:text-gray-900 text-sm block py-1 px-3">Contact Us</a>
+                    </li>
+                    <li>
+                        <a href="http://www.github.com/ikimukti" 
+                        class="text-gray-700 hover:text-gray-900 text-sm block py-1 px-3">Github</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>

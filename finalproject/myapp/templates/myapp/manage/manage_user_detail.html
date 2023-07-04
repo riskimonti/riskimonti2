@@ -1,0 +1,60 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <!-- Button Back-->
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">  
+            <p class="text-gray-700">Detail Information of User {{ data_user.first_name }} {{ data_user.last_name }}, you can edit the information below.</p>
+            <div class="flex flex-col space-y-2">
+                <p class="font-bold">User Information :</p>
+                <ul class="list-disc list-inside ml-4 space-y-2">
+                    <li class="text-gray-700">Username : @<span class="font-bold">{{ data_user.username }}</span></li>
+                    <li class="text-gray-700">Email : <span class="font-bold">{% if data_user.email %}{{ data_user.email }}{% else %} - {% endif %}</span></li>
+                    <li class="text-gray-700">First Name : <span class="font-bold">{% if data_user.first_name %}{{ data_user.first_name }}{% else %} - {% endif %}</span></li>
+                    <li class="text-gray-700">Last Name : <span class="font-bold">{% if data_user.last_name %}{{ data_user.last_name }}{% else %} - {% endif %}</span></li>
+                    <li class="text-gray-700">Date Joined : <span class="font-bold">{{ data_user.date_joined|date:"d F Y" }}</span></li>
+                    <li class="text-gray-700">Last Login : <span class="font-bold">{% if data_user.last_login %}{{ data_user.last_login|date:"d F Y" }}{% else %} - {% endif %}</span></li>
+                </ul>
+                <p class="font-bold">Note :</p>
+                <ul class="list-disc list-inside ml-4 space-y-2">
+                    <li class="text-gray-700">If you want to data user, delete the user or change the user password, you can click the button below.</li>
+                </ul>
+                <!-- button -->
+                <div class="flex flex-row justify-end items-end space-x-2">
+                    <a href="{% url 'myapp:manage_user_delete' data_user.id %}" class="flex flex-row justify-center items-center bg-red-500 hover:bg-red-600 rounded-md px-4 py-2 text-white">
+                        <i class="fas fa-trash"></i>
+                        <span class="ml-2">Delete User</span>
+                    </a>
+                    <a href="{% url 'myapp:manage_user_edit' data_user.id %}" class="flex flex-row justify-center items-center bg-yellow-500 hover:bg-yellow-600 rounded-md px-4 py-2 text-white">
+                        <i class="fas fa-edit"></i>
+                        <span class="ml-2">Edit User</span>
+                    </a>
+                    <!-- change the user password-->
+                    <a href="{% url 'myapp:manage_user_reset_password' data_user.id %}" class="flex flex-row justify-center items-center bg-teal-500 hover:bg-teal-600 rounded-md px-4 py-2 text-white">
+                        <i class="fas fa-key"></i>
+                        <span class="ml-2">Change Password</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

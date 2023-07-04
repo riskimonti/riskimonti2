@@ -1,0 +1,35 @@
+{% load static %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static app_css %}">
+</head>
+<body>
+    <div class="container-fluid mx-auto bg-red-200">
+        <div class="flex flex-col items-center justify-center">
+        <img src="{% static logo %}" alt="Logo" class="w-16">
+        <h1 class="text-4xl font-bold text-center text-gray-700">{{ title }}</h1>
+        <p class="text-xl text-center text-gray-700">{{ content }}</p>
+        <div class="flex w-full">
+            <div class="w-1/6 bg-gray-100">
+                {% include 'myapp/snippets/navs.html' %}
+            </div>
+            <div class="w-5/6 bg-white">
+                {% block container %}
+            
+                {% endblock container %}
+            </div>
+        </div>
+        {% include 'myapp/snippets/footer.html' %}
+        </div>
+        
+    </div>
+    {% include 'myapp/snippets/scripts.html' %}
+</body>
+</html>

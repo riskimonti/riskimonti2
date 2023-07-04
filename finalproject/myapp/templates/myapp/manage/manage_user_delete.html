@@ -1,0 +1,56 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">  
+            <p>Delete User <span class="font-bold">{{ data_user.username|title }}</span> ? This action cannot be undone.</p>
+            <div class="flex flex-col space-y-2">
+                <p class="font-bold">User Information :</p>
+                <ul class="list-disc list-inside ml-4 space-y-2">
+                    <li>Username : <span class="font-bold">{{ data_user.username|title }}</span></li>
+                    <li>Fullname : 
+                        <span class="font-bold">
+                            {% if data_user.first_name %}
+                                {{ data_user.first_name|title }} {{ data_user.last_name|title }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </span>
+                    </li>
+                    <li>Email : <span class="font-bold">{% if data_user.email %}{{ data_user.email }}{% else %}-{% endif %}</span></li>
+                </ul>
+                <p class="font-bold">Note :</p>
+                <ul class="list-disc list-inside ml-4 space-y-2">
+                    <li>Deleting this user will also delete all data related to this user.</li>
+                </ul>
+            </div>
+            <form class="flex flex-row justify-end items-center space-x-2" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="username" value="{{ data_user.username }}">
+                <button type="submit" class="flex flex-row justify-center items-center bg-red-500 hover:bg-red-600 rounded-md px-4 py-2 text-white space-x-2">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

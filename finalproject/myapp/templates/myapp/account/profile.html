@@ -1,0 +1,158 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">
+        <!-- content Profile -->
+            <div class="flex flex-col space-y-2">
+                <div class="flex flex-row justify-between items-center">
+                    <div class="flex flex-row space-x-2">
+                        <div class="flex flex-col space-y-1">
+                            <h1 class="text-lg font-bold text-gray-700">Profile</h1>
+                            <p class="text-sm text-gray-500">Welcome to your account profile! Here, you can customize and manage your personal information to enhance your overall experience. Please note that certain details may be visible to other users of the platform.</p>
+                            <p class="text-sm text-gray-500">Profile Information:</p>
+                            <ul class="flex flex-col space-y-1">
+                                <li class="flex flex-row space-x-2">
+                                    In this section, you can provide and update your full name, allowing others to identify you accurately within the community.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flex flex-row space-x-2">
+                        <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- content Image Profile and form profile -->
+                <form class="flex items-center space-x-6 w-full">
+                    <div class="flex flex-col space-y-2 w-full">
+                        <div class="flex flex-row space-x-2 items-center">
+                            <div class="shrink-0">
+                                <img class="h-16 w-16 object-cover rounded-full" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80" alt="Current profile photo" />
+                            </div>
+                            <label class="block">
+                                <span class="sr-only">Choose profile photo</span>
+                                <input type="file" class="block w-full text-sm text-slate-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-violet-50 file:text-violet-700
+                                hover:file:bg-violet-100
+                                "/>
+                            </label>
+                        </div>
+                        <div class="flex flex-col space-y-2">
+                            <!-- username -->
+                            <div class="flex flex-col space-y-1">
+                                <label class="text-sm font-semibold text-gray-700">Usermane</label>
+                                <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-violet-50 file:text-violet-700
+                                hover:file:bg-violet-100
+                                " placeholder="Choose a username" />
+                            </div>
+                            <!-- email -->
+                            <div class="flex flex-col space-y-1">
+                                <label class="text-sm font-semibold text-gray-700">Email</label>
+                                <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-violet-50 file:text-violet-700
+                                hover:file:bg-violet-100
+                                " placeholder="Your email address" />
+                            </div>
+                            <!-- first name and last name -->
+                            <div class="flex flex-row space-x-2">
+                                <div class="flex flex-col space-y-1 w-1/2">
+                                    <label class="text-sm font-semibold text-gray-700">First name</label>
+                                    <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                    " placeholder="Your first name" />
+                                </div>
+                                <div class="flex flex-col space-y-1 w-1/2">
+                                    <label class="text-sm font-semibold text-gray-700">Last name</label>
+                                    <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                    " placeholder="Your last name" />
+                                </div>
+                            </div>
+                            <!-- list row active, staff status, superuser status -->
+                            <div class="flex flex-row space-x-2">
+                                <div class="flex flex-col space-y-1 w-1/2">
+                                    <label class="text-sm font-semibold text-gray-700">Active</label>
+                                    <select class="block w-full text-sm text-slate-500 rounded-md
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                    ">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col space-y-1 w-1/2">
+                                    <label class="text-sm font-semibold text-gray-700">Staff status</label>
+                                    <select class="block w-full text-sm text-slate-500 rounded-md
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                    ">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col space-y-1 w-1/2">
+                                    <label class="text-sm font-semibold text-gray-700">Superuser status</label>
+                                    <select class="block w-full text-sm text-slate-500 rounded-md
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                    ">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- button action to save -->
+                            <div class="flex flex-row-reverse">
+                                <button class="px-4 py-2 text-sm font-semibold text-white bg-violet-700 rounded-md hover:bg-violet-800">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>    
+        </div>
+    </div>
+</div>
+{% endblock content %}

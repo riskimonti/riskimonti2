@@ -1,0 +1,78 @@
+{% extends "myapp/core_base.html" %}
+{% load static %}
+
+{% block container %}
+<div class="flex flex-col justify-center items-center w-full">
+    <!-- help -->
+    <div class="w-full max-w-xs md:max-w-sm lg:max-w-4xl rounded overflow-hidden my-2 h-auto bg-white shadow-md mb-5">
+        <div class=" px-8 pt-6 pb-4">
+            <h1 class="text-2xl font-bold mb-2">{{ title }}</h1>
+            <!-- get help desciption -->
+            <p class="text-gray-700 text-base mb-2">
+                Help is available for those who need it. If you are in need of help, please contact us. We will do our best to help you. <a href="tel:{{ phone_number }}" class="text-blue-500">Call us</a> or <a href="mailto:{{ email }}" class="text-blue-500">email us</a> for more information. Below are some general helps:
+            </p>
+            <!-- Popular help resources -->
+            <ul role="list" class="marker:text-sky-400 list-disc pl-5 space-y-3 text-slate-500 mt-5">
+                <!-- Create an account for a new user -->
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <p class="ml-2">
+                        <span class="font-bold">Create an account for a new user</span>
+                        <br>
+                        <span class="text-sm">To create an account, please click the <a href="" class="text-blue-500">Register</a> button on the home page.</span>
+                    </p>
+                </li>
+                <!-- Change password -->
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <p class="ml-2">
+                        <span class="font-bold">Change password</span>
+                        <br>
+                        <span class="text-sm">To change your password, please click the <a href="" class="text-blue-500">Change Password</a> button on the home page.</span>
+                    </p>
+                </li>
+                <!-- Change account information -->
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <p class="ml-2">
+                        <span class="font-bold">Change account information</span>
+                        <br>
+                        <span class="text-sm">To change your account information, please click the <a href="" class="text-blue-500">Change Account Information</a> button on the home page.</span>
+                    </p>
+                </li>
+                <!-- Upload image for segmentation -->
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <p class="ml-2">
+                        <span class="font-bold">Upload image for segmentation</span>
+                        <br>
+                        <span class="text-sm">To upload an image for segmentation, please click the <a href="" class="text-blue-500">Upload Image</a> button on the home page.</span>
+                    </p>
+                </li>
+                <!-- View segmentation results -->
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <p class="ml-2">
+                        <span class="font-bold">View segmentation results</span>
+                        <br>
+                        <span class="text-sm">To view the segmentation results, please click the <a href="" class="text-blue-500">View Segmentation Results</a> button on the home page.</span>
+                    </p>
+                </li>
+                <!-- View segmentation results -->
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <p class="ml-2">
+                        <span class="font-bold">View segmentation results</span>
+                        <br>
+                        <span class="text-sm">To view the segmentation results, please click the <a href="" class="text-blue-500">View Segmentation Results</a> button on the home page.</span>
+                    </p>
+                </li>
+
+                
+            </ul>
+        </div>
+        <!-- blog list post scrollable -->
+        
+    </div>
+</div>
+{% endblock container %}

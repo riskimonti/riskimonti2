@@ -1,0 +1,262 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10 mb-48 pb-20">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">
+            <div class="flex flex-row justify-between items-center">
+                <p class="text-gray-700">Graph of Image upload per day</p>
+                <!-- button Add User -->
+            </div>
+            <div class="container">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block chartjs%}
+<script>
+    const labels = {{ chartjs.labels|safe }};
+    const data_color = {{ chartjs.data_color|safe }};
+    const dict_color = {{ chartjs.dict_color|safe }};
+    const data_width = {{ chartjs.data_width|safe }};
+    const dict_width = {{ chartjs.dict_width|safe }};
+    const data_height = {{ chartjs.data_height|safe }};
+    const dict_height = {{ chartjs.dict_height|safe }};
+    const data_size = {{ chartjs.data_size|safe }};
+    const dict_size = {{ chartjs.dict_size|safe }};
+    const data_channel = {{ chartjs.data_channel|safe }};
+    const dict_channel = {{ chartjs.dict_channel|safe }};
+    const data_format = {{ chartjs.data_format|safe }};
+    const dict_format = {{ chartjs.dict_format|safe }};
+    const data_dpi = {{ chartjs.data_dpi|safe }};
+    const dict_dpi = {{ chartjs.dict_dpi|safe }};
+    const data_distance = {{ chartjs.data_distance|safe }};
+    const dict_distance = {{ chartjs.dict_distance|safe }};
+    const data_uploader = {{ chartjs.data_uploader|safe }};
+    const dict_uploader = {{ chartjs.dict_uploader|safe }};
+
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Color',
+                data: data_color,
+                // red
+                borderColor:  '#ff0000',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'Width',
+                data: data_width,
+                // blue
+                borderColor:  '#0000ff',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'Height',
+                data: data_height,
+                // green
+                borderColor:  '#00ff00',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'Size',
+                data: data_size,
+                // yellow
+                borderColor:  '#ffff00',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'Channel',
+                data: data_channel,
+                // purple
+                borderColor:  '#800080',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'Format',
+                data: data_format,
+                // orange
+                borderColor:  '#ffa500',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'DPI',
+                data: data_dpi,
+                // pink
+                borderColor:  '#ff69b4',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'Distance',
+                data: data_distance,
+                // brown
+                borderColor:  '#a52a2a',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'Uploader',
+                data: data_uploader,
+                // gray
+                borderColor:  '#808080',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            }
+        ]
+    };
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    display: true
+                },
+                x: {
+                    beginAtZero: true,
+                    display: true
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Segmentation Graph',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    usePointStyle: true,
+                    callbacks: {
+                        labelPointStyle: function(context) {
+                            if (context.dataset.label == 'Color') {
+                                return {
+                                    pointStyle: 'circle',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Width') {
+                                return {
+                                    pointStyle: 'triangle',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Height') {
+                                return {
+                                    pointStyle: 'rect',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Size') {
+                                return {
+                                    pointStyle: 'crossRot',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Channel') {
+                                return {
+                                    pointStyle: 'star',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Format') {
+                                return {
+                                    pointStyle: 'rectRot',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'DPI') {
+                                return {
+                                    pointStyle: 'triangle',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Distance') {
+                                return {
+                                    pointStyle: 'rect',
+                                    rotation: 0
+                                };
+                            } else if (context.dataset.label == 'Uploader') {
+                                return {
+                                    pointStyle: 'circle',
+                                    rotation: 0
+                                };
+                            }
+                        },
+                        label: function(context) {
+                            
+                            var label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                // label += context.parsed.y + ' %';
+                                // change value context.parsed.y to dict
+                                if (context.dataset.label == 'Color') {
+                                    label += dict_color[context.parsed.y];
+                                } else if (context.dataset.label == 'Width') {
+                                    label += dict_width[context.parsed.y];
+                                } else if (context.dataset.label == 'Height') {
+                                    label += dict_height[context.parsed.y];
+                                } else if (context.dataset.label == 'Size') {
+                                    if (dict_size[context.parsed.y] > 1024) {
+                                        label += dict_size[context.parsed.y] / 1024 + ' MB';
+                                    } else {
+                                        label += dict_size[context.parsed.y] + ' KB';
+                                    }
+                                } else if (context.dataset.label == 'Channel') {
+                                    label += dict_channel[context.parsed.y];
+                                } else if (context.dataset.label == 'Format') {
+                                    label += dict_format[context.parsed.y];
+                                } else if (context.dataset.label == 'DPI') {
+                                    label += dict_dpi[context.parsed.y];
+                                } else if (context.dataset.label == 'Distance') {
+                                    label += dict_distance[context.parsed.y];
+                                } else if (context.dataset.label == 'Uploader') {
+                                    label += dict_uploader[context.parsed.y];
+                                }
+                            }
+                            return label;
+                        },
+                    },
+                    position: 'nearest',
+                },
+            }
+        }
+    });
+  });
+</script>
+{% endblock chartjs %}

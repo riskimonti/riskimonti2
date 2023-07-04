@@ -1,0 +1,160 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10 pb-20 mb-80">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">
+        <!-- content Profile -->
+            <div class="flex flex-col space-y-2">
+                <div class="flex flex-row justify-between items-center">
+                    <div class="flex-1 flex-row space-x-2">
+                        <div class="flex flex-col space-y-1">
+                            <h1 class="text-lg font-bold text-gray-700">Profile {{ account.first_name|title }} {{ account.last_name|title }}</h1>
+                            <h1 class="text-lg font-bold text-gray-700">Profile</h1>
+                            <p class="text-sm text-gray-500">Welcome to your account profile! Here, you can customize and manage your personal information to enhance your overall experience. Please note that certain details may be visible to other users of the platform.</p>
+                            <p class="font-bold text-gray-700">Profile information :</p>
+                            <ul class="list-disc list-inside ml-4 space-y-2">
+                                <li class="text-sm text-gray-500">
+                                    In this section, you can provide and update your full name, allowing others to identify you accurately within the community.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flex flex-row space-x-2 w-auto">
+                        <a class="flex flex-row justify-center items-center bg-blue-200 hover:bg-blue-300 rounded-md px-4 py-2 text-gray-700" href="{% url 'myapp:account_update' account.username %}">
+                            <i class="fas fa-pencil-alt"></i>
+                            <span class="ml-2">Edit Profile</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- content Image Profile and form profile -->
+                <form class="flex items-center w-full" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="flex flex-col space-y-2 w-full">
+                        <h1 class="text-lg font-bold text-gray-700">Profile information</h1>
+                        <div class="flex flex-row space-x-2">
+                            <div class="flex flex-col space-y-1">
+                                <label class="text-sm font-semibold text-gray-700">Photo</label>
+                                <div class="flex flex-row space-x-2">
+                                    <div class="flex flex-col space-y-1">
+                                        <img src="{{ account.userprofile.profile_pic.url }}" class="w-40 h-40 rounded-md object-cover" alt="profile">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex-col space-y-1">
+                                <!-- username -->
+                                <div class="flex flex-col space-y-1">
+                                    <label class="text-sm font-semibold text-gray-700">Username</label>
+                                    <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                    " placeholder="Choose a username" value="{{ account.username }}"  readonly/>
+                                </div>
+                                <!-- email -->
+                                <div class="flex flex-col space-y-1">
+                                    <label class="text-sm font-semibold text-gray-700">Email</label>
+                                    <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-violet-700
+                                    hover:file:bg-violet-100
+                                    " placeholder="Your email address"  value="{{ account.email }}" readonly/>
+                                </div>
+                                <!-- first name and last name -->
+                                <div class="flex flex-row space-x-2">
+                                    <div class="flex flex-col space-y-1 w-1/2">
+                                        <label class="text-sm font-semibold text-gray-700">First name</label>
+                                        <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-violet-50 file:text-violet-700
+                                        hover:file:bg-violet-100
+                                        " placeholder="Your first name" value="{{ account.first_name }}" readonly/>
+                                    </div>
+                                    <div class="flex flex-col space-y-1 w-1/2">
+                                        <label class="text-sm font-semibold text-gray-700">Last name</label>
+                                        <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-violet-50 file:text-violet-700
+                                        hover:file:bg-violet-100
+                                        " placeholder="Your last name" value="{{ account.last_name }}" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h2 class="text-lg font-bold text-gray-700">Personal information</h2>
+                        <!-- phone number -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Phone number</label>
+                            <input type="text" class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-violet-50 file:text-violet-700
+                            hover:file:bg-violet-100
+                            " placeholder="Your phone number" value="{{ account.userprofile.phone_number }}" readonly/>
+                        </div>
+                        <!-- address -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Address</label>
+                            <textarea class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-violet-50 file:text-violet-700
+                            hover:file:bg-violet-100
+                            " placeholder="Your address" readonly>{{ account.userprofile.address }}</textarea>
+                        </div>
+                        <!-- Date of birth -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Date of birth</label>
+                            <input type="date" class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-violet-50 file:text-violet-700
+                            hover:file:bg-violet-100
+                            " placeholder="Your date of birth" value="{{ account.userprofile.date_of_birth|date:'Y-m-d' }}" readonly/>
+                        </div>
+                        <!-- Bio -->
+                        <div class="flex flex-col space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">Bio</label>
+                            <textarea class="block w-full text-sm text-slate-500 rounded-md
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-violet-50 file:text-violet-700
+                            hover:file:bg-violet-100
+                            " placeholder="Your bio" readonly rows="5">{{ account.userprofile.bio }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>    
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,43 @@
+<div class="flex-1 flex-col w-1/6 fixed left-0 top-14 h-[calc(100vh-3.5rem)] px-2 py-4 shadow overflow-y-auto overflow-hidden no-scrollbar mb-96" id="toogleMenu">
+    <!-- sidebar Menu menu list with icons and text dropdown -->
+    <ul class="space-y-2">
+    {% for menu in menus %}
+        <li class="flex flex-row justify-between items-center space-x-2 hover:bg-teal-200 rounded-md p-2 cursor-pointer" onclick="toggleDropdown('{{ menu.id }}')">
+            <div>
+                <i class="{{ menu.icon }} text-teal-500 text-lg mr-2"></i>
+                {% if menu.url == "" %}
+                <span class="text-gray-700 hover:text-gray-900" target="_blank">
+                    {{ menu.name }}
+                </span>
+                {% else %}
+                <a href="{{ menu.url }}" class="text-gray-700 hover:text-gray-900">
+                    {{ menu.name }}
+                </a>
+                {% endif %}
+            </div>
+            <!-- dropdown menu -->
+            {% if menu.submenus %}
+            <div>
+                <i class="fas fa-chevron-down first-letter:text-gray-500 ml-auto rotate-180" id="dropdown-icon-{{ menu.id }}"></i>
+            </div>
+            {% endif %}
+        </li>
+        <hr class="border-gray-200">
+        <!-- dropdown menu list with icons and text -->
+        {% if menu.submenus %}
+        <ul id="dropdown-menu-{{ menu.id }}" class="flex-col space-y-2 pl-4 py-2 hidden" >
+            {% for submenu in menu.submenus %}
+            <li class="flex flex-row justify-between items-center space-x-2 hover:bg-teal-200 rounded-md p-2 cursor-pointer">
+                <div>
+                    <i class="{{ submenu.icon }} text-teal-500 text-lg mr-2"></i>
+                    <a href="{{ submenu.url }}" class="text-gray-700 hover:text-gray-900" {% if submenu.id == 'blog' %} target="_blank" {% endif %}>
+                        {{ submenu.name }}
+                    </a>
+                </div>
+            </li>
+            {% endfor submenu %}
+        </ul>
+        {% endif %}
+    {% endfor menu %}
+    </ul>
+</div>

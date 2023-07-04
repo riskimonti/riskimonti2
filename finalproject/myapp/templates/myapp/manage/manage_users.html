@@ -1,0 +1,230 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2">
+            <div class="flex flex-row justify-between items-center">
+                <p class="text-gray-700">Manage User, you can add, edit, delete user. You can also change user password.</p>
+                <!-- button Add User -->
+                <div class="flex flex-row justify-end items-center space-x-2">
+                    <form class="flex flex-row justify-center items-center" method="GET">
+                        <!-- input -->
+                        <input type="text" class="block w-full text-sm text-slate-500 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 " placeholder="Search..." name="search" value="{{ request.GET.search }}">
+                        <!-- button search image -->
+                        <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 ml-2" type="submit">
+                            <i class="fas fa-search"></i>
+                            <span class="ml-2">Search</span>
+                        </button>
+                    </form>
+                    <a href="{% url 'myapp:manage_user_add' %}" class="flex flex-row justify-center items-center bg-blue-300 hover:bg-blue-400 rounded-md px-4 py-2 text-gray-700 space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Add User</span>
+                    </a>
+                </div>
+            </div>
+            {% if page_obj %}
+                <div class="flex flex-row flex-wrap justify-center items-center space-x-2">
+                    <table class="table-auto w-full">
+                        <thead>
+                            <tr>
+                                <th class="px-2 py-1 text-xs border">
+                                    <i class="fas fa-id-card"></i>
+                                    ID
+                                </th>
+                                <th class="px-2 py-1 text-xs border">
+                                    <i class="fas fa-user"></i>
+                                    Username
+                                </th>
+                                <th class="px-2 py-1 text-xs border">
+                                    <i class="fas fa-id-badge"></i>
+                                    Fullname
+                                </th>
+                                <th class="px-2 py-1 text-xs border">
+                                    <i class="fas fa-envelope"></i>
+                                    Email
+                                </th>
+                                <th class="px-2 py-1 text-xs border">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                    Role
+                                </th>
+                                <th class="px-2 py-1 text-xs border">
+                                    <i class="fa-solid fa-lock"></i>
+                                    Admin
+                                </th>
+                                <th class="px-2 py-1 text-xs border">
+                                    <i class="fa-solid fa-cog"></i>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in page_obj %}
+                            <tr>
+                                <td class="border px-2 py-1 text-xs">
+                                    <i class="fa-solid fa-fingerprint"></i>
+                                </td>
+                                <td class="border px-2 py-1 text-xs">
+                                    {{ data.username|capfirst }}
+                                </td>
+                                <td class="border px-2 py-1 text-xs">
+                                    <!-- First name and full name none -->
+                                    {% if data.first_name == '' and data.last_name == '' %}
+                                        <span class="text-gray-400">None</span>
+                                    {% else %}
+                                        {{ data.first_name|capfirst }} {{ data.last_name|capfirst }}
+                                    {% endif %}
+                                </td>
+                                <td class="border px-2 py-1 text-xs">
+                                    {% if data.email == '' %}
+                                        <span class="text-gray-400">None</span>
+                                    {% else %}
+                                        {{ data.email|capfirst }}
+                                    {% endif %}
+                                </td>
+                                <td class="border px-2 py-1 text-xs space-x-2">
+                                    <!--- for data.groups.all -->
+                                    {% if data.groups.all %}
+                                        {% for group in data.groups.all %}
+                                            <span class="bg-blue-500 text-white px-2 py-1 rounded-md">
+                                                {{ group.name|capfirst }}
+                                            </span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-gray-400">None</span>
+                                    {% endif %}
+                                </td>
+                                <td class="border px-2 py-1 text-xs">
+                                    <div class="flex flex-row space-x-2">
+                                        {% if data.is_superuser %}
+                                            <span class="bg-green-500 text-white px-2 py-1 rounded-md">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                        {% else %}
+                                            <span class="bg-red-500 text-white px-2 py-1 rounded-md">
+                                                <i class="fas fa-times"></i>
+                                            </span>
+                                        {% endif %}
+                                        {% if data.is_staff %}
+                                            <span class="bg-green-500 text-white px-2 py-1 rounded-md">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                        {% else %}
+                                            <span class="bg-red-500 text-white px-2 py-1 rounded-md">
+                                                <i class="fas fa-times"></i>
+                                            </span>
+                                        {% endif %}
+                                        {% if data.is_active %}
+                                            <span class="bg-green-500 text-white px-2 py-1 rounded-md">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                        {% else %}
+                                            <span class="bg-red-500 text-white px-2 py-1 rounded-md">
+                                                <i class="fas fa-times"></i>
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="border px-2 py-1 text-xs">
+                                    <div class="flex flex-row space-x-2">
+                                        <a href="{% url 'myapp:manage_user_edit' data.id %}" class="flex flex-row justify-center items-center bg-yellow-500 hover:bg-yellow-600 rounded-md px-2 py-1 text-white">
+                                            <i class="fas fa-edit mr-2"></i>
+                                            Edit
+                                        </a>
+                                        <!-- if user = data_user delete not disable-->
+                                        {% if user != data %}
+                                            <a href="{% url 'myapp:manage_user_delete' data.id %}" class="flex flex-row justify-center items-center bg-red-500 hover:bg-red-600 rounded-md px-2 py-1 text-white">
+                                                <i class="fas fa-trash mr-2"></i>
+                                                Delete
+                                            </a>
+                                        {% else %}
+                                            <a href="#" class="flex flex-row justify-center items-center bg-gray-500 hover:bg-gray-600 rounded-md px-2 py-1 text-white">
+                                                <i class="fas fa-trash mr-2"></i>
+                                                Delete
+                                            </a>
+                                        {% endif %}
+                                        <a href="{% url 'myapp:manage_user_detail' data.id %}" class="flex flex-row justify-center items-center bg-green-500 hover:bg-green-600 rounded-md px-2 py-1 text-white">
+                                            <i class="fas fa-eye mr-2"></i>
+                                            Detail
+                                        </a>
+                                        <!-- Reset Password -->
+                                        <a href="{% url 'myapp:manage_user_reset_password' data.id %}" class="flex flex-row justify-center items-center bg-fuchsia-500 hover:bg-fuchsia-600 rounded-md px-2 py-1 text-white">
+                                            <i class="fas fa-key mr-2"></i>
+                                            Reset
+                                        </a>
+                                        <!-- Group -->
+                                        <a href="{% url 'myapp:manage_user_group_edit' data.id %}" class="flex flex-row justify-center items-center bg-blue-500 hover:bg-blue-600 rounded-md px-2 py-1 text-white">
+                                            <i class="fas fa-users mr-2"></i>
+                                            Group
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% else %}
+            <div class="flex flex-row justify-center items-center space-x-2">
+                <div class="flex flex-col justify-center items-center space-y-2">
+                    <i class="fas fa-images text-4xl text-gray-500"></i>
+                    <span class="text-sm text-gray-500">No Images Uploaded</span>
+                </div>
+            </div>
+            {% endif %}
+            {% if is_paginated %}
+            <div class="flex flex-row justify-between items-center space-x-2">
+                <div class="flex flex-row space-x-2">
+                    <span class="text-xs text-gray-500">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+                </div>
+                <div class="flex flex-row space-x-2">
+                    {% if page_obj.has_previous %}
+                    <a class="text-xs flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700" href="?page=1&search={{ search }}">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a class="text-xs flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700" href="?page={{ page_obj.previous_page_number }}&search={{ search }}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                    {% endif %}
+                    {% for page in page_obj.paginator.page_range %}
+                    {% if page_obj.number == page %}
+                    <a class="text-xs flex flex-row justify-center items-center bg-blue-200 hover:bg-blue-300 rounded-md px-4 py-2 text-gray-700" href="?page={{ page }}&search={{ search }}">{{ page }}</a>
+                    {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                    <a class="text-xs flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700" href="?page={{ page }}&search={{ search }}">{{ page }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <a class="text-xs flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700" href="?page={{ page_obj.next_page_number }}&search={{ search }}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a class="text-xs flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700" href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="flex flex-row space-x-2">
+                    <span class="text-xs text-gray-500">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries.</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

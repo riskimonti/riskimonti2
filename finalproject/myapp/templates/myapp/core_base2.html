@@ -1,0 +1,135 @@
+{% load static %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    {% tailwind_css %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,800;0,900;1,100;1,200;1,300;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="font-poppins h-screen">
+    <div class="flex flex-col h-screen justify-between">
+        <div class="flex flex-col justify-start items-center top-0 fixed w-full z-10">
+            {% include 'myapp/snippets/navbar.html' %}
+        </div>
+        <!-- fixed sidebar Menu and content overflow -->
+        <div class="flex flex-col justify-center items-center">
+            <!-- fixed sidebar Menu -->
+            {% include 'myapp/snippets/sidebar.html' %}
+            <!-- content overflow -->
+            {% block content %} {% endblock content %}
+            
+        </div>
+        <!-- footer top z-index -->
+        <div class="flex flex-col justify-center items-center bg-white w-full fixed bottom-0">
+            {% include 'myapp/snippets/footer.html' %}
+        </div>
+    </div>
+    {% include 'myapp/snippets/scripts.html' %}
+    {% block scriptcustom %} {% endblock scriptcustom %}
+    {% block chartjs %} {% endblock chartjs %}
+    <script text="text/javascript">
+        function goBack() {
+            window.history.back(); // Kembali ke halaman sebelumnya
+        }
+        function toggleMenu() {
+            const menu = document.querySelector('#toogleMenu');
+            menu.classList.toggle('hidden');
+            // toogle content from 5/6 to 6/6
+            const content = document.querySelector('#content');
+            content.classList.toggle('w-5/6');
+            content.classList.toggle('w-full');
+            
+        }
+
+        function toogleAccountMenu() {
+            const accountMenu = document.querySelector('#accountMenu');
+            accountMenu.classList.toggle('hidden');
+        }
+
+        function toggleModal(id) {
+            const modal = document.querySelector(`#modal-${id}`);
+            modal.classList.toggle('hidden');
+        }
+
+        function toggleDropdown(id) {
+            const dropdownMenu = document.querySelector(`#dropdown-menu-${id}`);
+            const dropdownIcon = document.querySelector(`#dropdown-icon-${id}`);
+            dropdownMenu.classList.toggle('hidden');
+            dropdownIcon.classList.toggle('rotate-180');
+        }
+
+        function previewImage(event) {
+            var reader = new FileReader();
+            var imageField = document.querySelector('#image-field');
+            var imagePreview = document.querySelector('#image-preview');
+            var imagePreviewCount = document.querySelector('#image-preview-count');
+            var imagePreviewName = document.querySelector('#image-preview-name');
+            var imagePreviewSize = document.querySelector('#image-preview-size');
+            var imagePreviewDimension = document.querySelector('#image-preview-dimension');
+
+            reader.onload = function() {
+                if (reader.readyState == 2) {
+                    imagePreview.src = reader.result;
+                    imageField.value = reader.result;
+                }
+            }
+
+            if (imageField.files && imageField.files.length > 0) {
+                reader.readAsDataURL(imageField.files[0]);
+                // Change HTML content with the count of selected image files 0/1
+                imagePreviewCount.innerHTML = `${imageField.files.length}/1`;
+                // Change HTML content with the name of selected image files number of image files
+                imagePreviewName.innerHTML = '';
+                for (let i = 0; i < imageField.files.length; i++) {
+                    oldName = imagePreviewName.innerHTML;
+                    imagePreviewName.innerHTML = `${oldName} , ${imageField.files[i].name}`;
+                }
+                // jika panjang nama file melebihi 40 karakter
+                if (imagePreviewName.innerHTML.length > 40) {
+                    imagePreviewName.innerHTML = `${imagePreviewName.innerHTML.substring(0, 40)} ...`;
+                }
+                // Change HTML content with the size of selected image files number of image files ubah satuan ke MB
+                imagePreviewSize.innerHTML = '';
+                for (let i = 0; i < imageField.files.length; i++) {
+                    oldSize = imagePreviewSize.innerHTML;
+                    size = imageField.files[i].size / 1024 / 1024;
+                    imagePreviewSize.innerHTML = `${oldSize} , ${size.toFixed(2)} MB`;
+                }
+                // jika panjang nama file melebihi 40 karakter
+                if (imagePreviewSize.innerHTML.length > 40) {
+                    imagePreviewSize.innerHTML = `${imagePreviewSize.innerHTML.substring(0, 40)} ...`;
+                }
+
+            } else {
+                imagePreview.src = "{% static 'myapp/assets/author.png' %}";
+                // Reset HTML content if no image is selected
+                imagePreviewCount.innerHTML = `0/1`;
+            }
+
+        }
+        // listen for change event on image field
+        document.addEventListener('DOMContentLoaded', function() {
+            // null check
+            var imageField = document.querySelector('#image-field');
+            if (imageField) {
+                imageField.addEventListener('change', previewImage);
+            }
+        });
+
+    </script>
+</body>
+</html>

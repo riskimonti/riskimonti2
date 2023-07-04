@@ -1,0 +1,78 @@
+{% load static %}
+<header class="bg-white shadow-md w-full">
+    <nav class="flex items-center justify-between flex-wrap w-94% mx-auto py-1">
+        <div class="flex flex-row">
+            <!-- icon menu -->
+            <div class="flex items-center flex-shrink-0 text-gray-800 ml-6">
+                <button id="menu-toggle" class="flex items-center px-3 py-2 border border-gray-300 shadow-sm rounded-md hover:text-gray-900 hover:border-gray-900 appearance-none focus:outline-none text-gray-700" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <a class="text-2xl font-bold px-4 py-2" href="{% url 'myapp:index' %}">
+                VISION<span class="bg-gradient-to-t from-teal-500 to-stone-400 bg-clip-text text-transparent">SLICE</span>
+            </a>
+        </div>
+        <div class="">
+            <!-- account -->
+            <div>
+                <button type="button" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-2" id="accountMenuButton" aria-expanded="false" aria-haspopup="true" onclick="toogleAccountMenu()">
+                    Account
+                    <i class="fas fa-chevron-down ml-4 mt-1"></i>
+                </button>
+            </div>
+            <!-- account menu dropdown absolute hidden -->
+            <div id="accountMenu" class="absolute right-2 mt-2 w-auto h-auto min-w-[300px] rounded-md shadow-md bg-white ring-1 ring-black ring-opacity-5 py-4 z-10 px-4 hidden">
+                <!-- account profile -->
+                <div class="flex flex-col items-center justify-center">
+                    <div class="flex flex-row justify-between space-x-2">
+                        <div>
+                            <img class="w-16 h-16 rounded-full object-cover border-2 border-gray-300" alt="profile" src="{% if request.user.userprofile.profile_pic %}{{ request.user.userprofile.profile_pic.url }}{% else %}{% static 'myapp/assets/author.png' %}{% endif %}">
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold mt-2">{{ request.user.first_name|title }} {{ request.user.last_name|title }}</h1>
+                            <h2 class="text-sm text-gray-500">
+                                {% if request.user.is_superuser %}
+                                    <i class="fas fa-user-shield text-teal-500 mr-2"></i>
+                                    <span class="text-teal-500">Admin</span>
+                                {% else %}
+                                    <i class="fas fa-user text-teal-500 mr-2"></i>
+                                    <span class="text-teal-500">User</span>
+                                {% endif %}
+                            </h2>
+                        </div>
+                    </div>
+                    <!-- account menu -->
+                    <ul class="space-y-2 w-full mt-4">
+                        <li class="flex flex-row justify-between items-center space-x-2 hover:bg-teal-200 rounded-md p-2 cursor-pointer">
+                            <div>
+                                <i class="fas fa-user-circle text-teal-500 mr-2"></i>
+                                <a href="{% url 'myapp:account_profile' %}" class="text-gray-500 hover:text-gray-900">
+                                    Profile
+                                </a>
+                            </div>
+                        </li>
+                        <hr class="border-gray-200">
+                        <li class="flex flex-row justify-between items-center space-x-2 hover:bg-teal-200 rounded-md p-2 cursor-pointer">
+                            <div>
+                                <i class="fas fa-cog text-teal-500 mr-2"></i>
+                                <a href="{% url 'myapp:setting' %}" class="text-gray-500 hover:text-gray-900">
+                                    Settings
+                                </a>
+                            </div>
+                        </li>
+                        <hr class="border-gray-200">
+                        <li class="flex flex-row justify-between items-center space-x-2 hover:bg-teal-200 rounded-md p-2 cursor-pointer">
+                            <div>
+                                <i class="fas fa-sign-out-alt text-teal-500 mr-2"></i>
+                                <a href="{% url 'myapp:signout' %}" class="text-gray-500 hover:text-gray-900">
+                                    Sign out
+                                </a>
+                            </div>
+                        </li>
+                        <hr class="border-gray-200">
+                     </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,88 @@
+{% extends "myapp/core_base2.html" %}
+{% load static %}
+
+{% block content %}
+<!-- content overflow -->
+<div class="flex flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
+    <div class="flex flex-col m-2 bg-white rounded-md p-4 shadow-md z-10 mb-40">
+        <div class="flex flex-row justify-between items-center mb-2">
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-2xl font-bold text-gray-700">{{ title }}</h1>
+            </div>
+            <div class="flex flex-row space-x-2">
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2" onclick="window.history.back();">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </div>
+        <hr class="border-gray-200 mb-2">
+        <div class="flex flex-col space-y-2 w-full">
+            <!-- Upload image for segmentations -->
+            <div class="flex flex-row justify-between items-center">
+                <div class="flex flex-row space-x-2">
+                    <div class="flex flex-col space-y-1">
+                        <h1 class="text-lg font-bold text-gray-700">Upload Image</h1>
+                        <p class="text-sm text-gray-500">Upload an image to be segmented. The image will be resized to <span class="font-bold">512x512</span> pixels.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- image form update preview  -->
+            <div class="flex flex-row justify-start items-center space-x-4">
+                <div class="flex flex-col space-y-1">
+                    <h1 class="text-lg font-bold text-gray-700">Preview</h1>
+                    <p class="text-sm text-gray-500">Preview of the image to be uploaded.</p>
+                    <img src="/{{ form.image.value }}" class="w-64 h-64 object-cover object-center rounded-md shadow-md">
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <h1 class="text-lg font-bold text-gray-700">Preview Changes</h1>
+                    <p class="text-sm text-gray-500">Preview of the image after changes.</p>
+                    <img src="/{{ form.image.value }}" class="w-64 h-64 object-cover object-center rounded-md shadow-md" id="image-preview">
+                </div>
+            </div>
+            <!-- message -->
+            {% if messages %}
+            <div class="flex flex-row justify-between items-center">
+                <div class="flex flex-col space-y-1">
+                    {% for message in messages %}
+                    <p class="text-sm text-gray-500">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <!-- image upload form -->
+            <form method='POST' enctype="multipart/form-data" class="flex flex-col space-y-2 w-full">
+                {% csrf_token %}
+                {{ form.as_table }}
+                <button type="submit" class="flex flex-row justify-center items-center bg-blue-500 hover:bg-blue-600 rounded-md px-4 py-2 text-white">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span class="ml-2">Update</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <!-- image upload form end -->
+</div>
+{% endblock content %}
+{% block scriptcustom %} 
+<script>
+    // image preview
+    const imagePreview = document.getElementById('image-preview');
+    const imageUpload = document.getElementById('id_image');
+    imageUpload.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', function() {
+                imagePreview.setAttribute('src', this.result);
+            });
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.setAttribute('src', '/static/images/placeholder.png');
+        }
+    });
+</script>
+{% endblock scriptcustom %}
