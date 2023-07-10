@@ -253,17 +253,14 @@ class ImageTableColorClassView(ListView):
 
         # Calculate the average of jaccard_score, rand_score, and f1_score
         average_scores = queryset.aggregate(
-            avg_jaccard_score=Avg("segment__jaccard_score"),
-            avg_rand_score=Avg("segment__rand_score"),
-            avg_f1_score=Avg("segment__f1_score"),
+            avg_mse=Avg("segment__mse"),
+            avg_psnr=Avg("segment__psnr"),
         )
 
-        avg_jaccard_score = average_scores["avg_jaccard_score"]
-        self.extra_context["avg_jaccard_score"] = avg_jaccard_score
-        avg_rand_score = average_scores["avg_rand_score"]
-        self.extra_context["avg_rand_score"] = avg_rand_score
-        avg_f1_score = average_scores["avg_f1_score"]
-        self.extra_context["avg_f1_score"] = avg_f1_score
+        avg_mse = average_scores["avg_mse"]
+        self.extra_context["avg_mse"] = avg_mse
+        avg_psnr = average_scores["avg_psnr"]
+        self.extra_context["avg_psnr"] = avg_psnr
 
         return queryset
 
@@ -457,43 +454,21 @@ class ImageGraphColorClassView(ListView):
         else:
             self.extra_context["total_data"] = len(queryset)
 
-        f1_score_terbaik = max(f1_score_data) if f1_score_data else 0
-        f1_score_terjelek = min(f1_score_data) if f1_score_data else 0
-        indeks_f1_terbaik = (
-            f1_score_data.index(f1_score_terbaik) if f1_score_data else 0
-        )
-        indeks_f1_terjelek = (
-            f1_score_data.index(f1_score_terjelek) if f1_score_data else 0
-        )
+        mse_terbaik = max(mse_data) if mse_data else 0
+        mse_terjelek = min(mse_data) if mse_data else 0
+        indeks_f1_terbaik = mse_data.index(mse_terbaik) if mse_data else 0
+        indeks_mse_terjelek = mse_data.index(mse_terjelek) if mse_data else 0
 
-        rand_score_terbaik = max(rand_score_data) if rand_score_data else 0
-        rand_score_terjelek = min(rand_score_data) if rand_score_data else 0
-        indeks_rand_terbaik = (
-            rand_score_data.index(rand_score_terbaik) if rand_score_data else 0
-        )
-        indeks_rand_terjelek = (
-            rand_score_data.index(rand_score_terjelek) if rand_score_data else 0
-        )
+        psnr_terbaik = max(psnr_data) if psnr_data else 0
+        psnr_terjelek = min(psnr_data) if psnr_data else 0
+        indeks_psnr_terbaik = psnr_data.index(psnr_terbaik) if psnr_data else 0
+        indeks_psnr_terjelek = psnr_data.index(psnr_terjelek) if psnr_data else 0
 
-        jaccard_score_terbaik = max(jaccard_score_data) if jaccard_score_data else 0
-        jaccard_score_terjelek = min(jaccard_score_data) if jaccard_score_data else 0
-        indeks_jaccard_terbaik = (
-            jaccard_score_data.index(jaccard_score_terbaik) if jaccard_score_data else 0
-        )
-        indeks_jaccard_terjelek = (
-            jaccard_score_data.index(jaccard_score_terjelek)
-            if jaccard_score_data
-            else 0
-        )
         indeks_terbaik = (
-            max(indeks_f1_terbaik, indeks_rand_terbaik, indeks_jaccard_terbaik)
-            if f1_score_data
-            else 0
+            max(indeks_f1_terbaik, indeks_psnr_terbaik) if f1_score_data else 0
         )
         indeks_terjelek = (
-            min(indeks_f1_terjelek, indeks_rand_terjelek, indeks_jaccard_terjelek)
-            if f1_score_data
-            else 0
+            min(indeks_mse_terjelek, indeks_psnr_terjelek) if f1_score_data else 0
         )
 
         self.extra_context["best"] = {
