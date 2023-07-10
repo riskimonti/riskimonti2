@@ -27,8 +27,8 @@ class ImageGraphClassView(ListView):
         "title": "Image Graph",
         "menus": menus,
         "logo": "myapp/images/Logo.png",
-        "content": "Welcome to TOKSlice!",
-        "contributor": "TOKSlice Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
     }
@@ -196,8 +196,8 @@ class ImageTableColorClassView(ListView):
         "title": "Image Table Color",
         "menus": menus,
         "logo": "myapp/images/Logo.png",
-        "content": "Welcome to TOKSlice!",
-        "contributor": "TOKSlice Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
     }
@@ -274,8 +274,8 @@ class ImageGraphColorClassView(ListView):
         "title": "Image Graph Color",
         "menus": menus,
         "logo": "myapp/images/Logo.png",
-        "content": "Welcome to TOKSlice!",
-        "contributor": "TOKSlice Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
     }

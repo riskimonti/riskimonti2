@@ -11,8 +11,8 @@ from django.shortcuts import get_object_or_404
 
 class ReportBaseView(View):
     base_context = {
-        "content": "Welcome to TOKTIK!",
-        "contributor": "TOKTIK Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -59,8 +59,8 @@ class ReportSegmentationClassView(DetailView, ReportBaseView):
 
 class ReportBaseMixin:
     base_context = {
-        "content": "Welcome to TOKTIK!",
-        "contributor": "TOKTIK Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,

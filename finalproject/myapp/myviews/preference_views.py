@@ -17,8 +17,8 @@ class IndexClassView(View):
     template_name = "myapp/index.html"
     context = {
         "title": "Home",
-        "contributor": "TOKTIK Team",
-        "content": "Welcome to TOKTIK!",
+        "contributor": "REDUNION Team",
+        "content": "Welcome to REDUNION!",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "logo": "myapp/images/Logo.png",
@@ -190,8 +190,8 @@ class DashboardClassView(ListView):
             "uploaders": uploaders,
             "colors": colors,
             "title": "Dashboard",
-            "contributor": "TOKTIK Team",
-            "content": "Dashboard, a place to see the overview of the data in TOKTIK. You can see the number of data uploaded by each user, the number of segmented and unsegmented data, the color distribution of the images, and the number of segmentations for each segmentation type.",
+            "contributor": "REDUNION Team",
+            "content": "Dashboard, a place to see the overview of the data in REDUNION. You can see the number of data uploaded by each user, the number of segmented and unsegmented data, the color distribution of the images, and the number of segmentations for each segmentation type.",
             "app_css": "myapp/css/styles.css",
             "app_js": "myapp/js/scripts.js",
             "logo": "myapp/images/Logo.png",
@@ -215,8 +215,8 @@ class DashboardClassView(ListView):
 class AboutClassView(View):
     context = {
         "title": "About",
-        "contributor": "TOKTIK Team",
-        "content": "Welcome to TOKTIK!",
+        "contributor": "REDUNION Team",
+        "content": "Welcome to REDUNION!",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -232,8 +232,8 @@ class AboutClassView(View):
 class BlogClassView(View):
     context = {
         "title": "Blog",
-        "contributor": "TOKTIK Team",
-        "content": "Welcome to TOKTIK!",
+        "contributor": "REDUNION Team",
+        "content": "Welcome to REDUNION!",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -242,22 +242,22 @@ class BlogClassView(View):
             {
                 "title": "Blog Post 1",
                 "url": "/blog/post1/",
-                "content": "Welcome to TOKTIK!",
-                "author": "TOKTIK Team",
+                "content": "Welcome to REDUNION!",
+                "author": "REDUNION Team",
                 "date_posted": "August 27, 2018",
             },
             {
                 "title": "Blog Post 2",
                 "url": "/blog/post2/",
-                "content": "Welcome to TOKTIK!",
-                "author": "TOKTIK Team",
+                "content": "Welcome to REDUNION!",
+                "author": "REDUNION Team",
                 "date_posted": "August 28, 2018",
             },
             {
                 "title": "Blog Post 3",
                 "url": "/blog/post3/",
-                "content": "Welcome to TOKTIK!",
-                "author": "TOKTIK Team",
+                "content": "Welcome to REDUNION!",
+                "author": "REDUNION Team",
                 "date_posted": "August 29, 2018",
             },
         ],
@@ -272,8 +272,8 @@ class BlogClassView(View):
 class ContactClassView(View):
     context = {
         "title": "Contact",
-        "content": "Welcome to TOKTIK!",
-        "contributor": "TOKTIK Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -289,8 +289,8 @@ class ContactClassView(View):
 class DocsClassView(View):
     context = {
         "title": "Docs",
-        "content": "Welcome to TOKTIK!",
-        "contributor": "TOKTIK Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -311,8 +311,8 @@ class DocsClassView(View):
 class HelpClassView(View):
     context = {
         "title": "Help",
-        "contributor": "TOKTIK Team",
-        "content": "Welcome to TOKTIK!",
+        "contributor": "REDUNION Team",
+        "content": "Welcome to REDUNION!",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -328,8 +328,8 @@ class HelpClassView(View):
 class PreferenceSettingClassView(View):
     context = {
         "title": "Setting",
-        "content": "Welcome to TOKTIK!",
-        "contributor": "TOKTIK Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -350,8 +350,8 @@ class PreferenceSettingClassView(View):
 class PreferenceClassView(View):
     context = {
         "title": "Preferences",
-        "content": "Welcome to TOKTIK!",
-        "contributor": "TOKTIK Team",
+        "content": "Welcome to REDUNION!",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
@@ -372,8 +372,8 @@ class PreferenceClassView(View):
 class SettingClassView(View):
     context = {
         "title": "Settings",
-        "contributor": "TOKTIK Team",
-        "content": "Welcome to TOKTIK!",
+        "contributor": "REDUNION Team",
+        "content": "Welcome to REDUNION!",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,

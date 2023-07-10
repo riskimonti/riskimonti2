@@ -25,8 +25,8 @@ class BaseAccountView(View):
     template_name = "myapp/account/base.html"
     context = {
         "title": "Account",
-        "content": "Welcome to TOKTIK! Account",
-        "contributor": "TOKTIK Team",
+        "content": "Welcome to REDUNION! Account",
+        "contributor": "REDUNION Team",
         "app_css": "myapp/css/styles.css",
         "app_js": "myapp/js/scripts.js",
         "menus": menus,
