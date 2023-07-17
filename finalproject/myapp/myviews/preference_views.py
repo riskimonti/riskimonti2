@@ -101,8 +101,17 @@ class DashboardClassView(ListView):
             imagepreprocessing__segmentations__isnull=True,
         )
 
+        # Menghitung jumlah data Image yang sudah di-segmentasi
+        images_segmented2 = Image.objects.filter(
+            imagepreprocessing__isnull=False,
+            imagepreprocessing__segmentations__isnull=False,
+        )
+
         # Menghitung jumlah data Image yang belum di-segmentasi
         num_images_not_segmented_user = images_not_segmented.count()
+
+        # menghitung jumlah data Image yang telah di-segmentasi
+        num_images_segmented = (images_segmented2.count() / 54) / 2
 
         # Menghitung jumlah data Image yang telah di-segmentasi berdasarkan pengguna
         for image in images_segmented:
@@ -172,7 +181,7 @@ class DashboardClassView(ListView):
             "num_images_not_segmented_user": num_images_not_segmented_user,
             "labels_segmentation": json.dumps(["Segmented", "Not Segmented"]),
             "data_segmentation": json.dumps(
-                [num_labels_user, num_images_not_segmented_user]
+                [num_images_segmented, num_images_not_segmented_user]
             ),
             "num_labels_segmentation": num_labels_user,
             "labels_color": json.dumps(labels_color),

@@ -370,7 +370,7 @@ class SegmentationSummaryClassView(ListView):
         )
 
         # Menghitung jumlah data Image yang belum di-segmentasi
-        num_images_not_segmented_user = images_not_segmented.count()
+        num_images_not_segmented_user = images_not_segmented.count() / 54
 
         # Menghitung jumlah data Image yang telah di-segmentasi berdasarkan pengguna
         for image in images_segmented:
@@ -381,7 +381,7 @@ class SegmentationSummaryClassView(ListView):
                 data_count[uploader] = 1
 
         # Menghitung jumlah data Image yang belum di-segmentasi
-        num_images_not_segmented_user = images_not_segmented.count()
+        num_images_not_segmented_user = images_not_segmented.count() / 54
 
         # Mengambil data Image yang memiliki ImagePreprocessing
         images_with_preprocessing = Image.objects.filter(
