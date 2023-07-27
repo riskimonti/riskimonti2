@@ -21,17 +21,8 @@
         </div>
         <hr class="border-gray-200 mb-2">
         <div class="flex flex-col space-y-2">
-            <!-- Chart JS For Segmentation Summary -->
+ <!-- Chart JS For Segmentation Summary -->
             <div class="flex flex-row space-x-2">
-                <div class="flex w-96 flex-col space-y-2">
-                    <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Image Uploads Segmented</h1>
-                        <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                                <canvas id="chartku" class="w-full" height="230"></canvas>
-                        </div>
-                        <p class="text-sm text-gray-500">Segmented image uploads are the number of uploads by users, and the number of images from users that have not been segmented<span class="bg-red-500 text-white px-2 py-1 rounded-md ml-2">{{ chartjs.num_images_not_segmented_user }} images</span></p>
-                    </div>
-                </div>
                 <div class="flex-1 flex-col space-y-2">
                     <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
                         <h1 class="text-xl font-bold text-gray-700">Number of Users and Segmented Images vs. Not yet segmented</h1>
@@ -61,14 +52,6 @@
 
 {% block chartjs %} 
 <script>
-    // Chart 1
-    var labels_user = {{ chartjs.labels_user|safe }}
-    var data_user = {{ chartjs.data_user|safe }}
-    var num_labels_user = {{ chartjs.num_labels_user|safe }}
-    var backgroundColor_user = []
-    for (let i = 0; i < num_labels_user; i++) {
-        backgroundColor_user.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
-    }
 
     // Chart 2
     var labels_segmentation = {{ chartjs.labels_segmentation|safe }}
@@ -98,22 +81,9 @@
     }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('chartku').getContext('2d');
     const ctx2 = document.getElementById('chartku2').getContext('2d');
     const ctx3 = document.getElementById('chartku3').getContext('2d');
     const ctx4 = document.getElementById('chartku4').getContext('2d');
-
-    const data = {
-        labels: labels_user,
-        datasets: [
-                {
-                    label: 'Image Uploads Segmented',
-                    data: data_user,
-                    backgroundColor: backgroundColor_user,
-                    hoverOffset: 4
-                }
-            ]
-        };
     
     const data2 = {
         labels: labels_segmentation,
@@ -150,23 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             ]
         };
-
-    new Chart(ctx, {
-        type: 'pie',
-        data: data,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Chart Image Segmented by User'
-                }
-            }
-        },
-    });
 
     new Chart(ctx2, {
         type: 'bar',

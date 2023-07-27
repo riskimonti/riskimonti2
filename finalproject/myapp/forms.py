@@ -91,6 +91,12 @@ class VisibleMultipleHiddenInput(forms.widgets.HiddenInput):
 
 
 class ImageForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ImageForm, self).__init__(*args, **kwargs)
+        user = kwargs.get("initial", {}).get("user")
+        if user:
+            self.fields["uploader"].initial = user.username
+
     def clean_image(self):
         image = self.cleaned_data.get("image")
         if not image:
