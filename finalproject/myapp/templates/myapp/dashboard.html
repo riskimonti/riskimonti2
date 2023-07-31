@@ -21,36 +21,27 @@
         </div>
         <hr class="border-gray-200 mb-2">
         <div class="flex flex-col space-y-2">
-            <p class="text-sm text-gray-500">Welcome to the Dashboard, your central hub for obtaining a comprehensive overview of the data within REDUNION. Here, you can access valuable insights such as the number of data uploads by each user, the segmentation status of the images, the color distribution across the uploaded images, and the segmentation counts for different segmentation types.</p>
+            <p class="text-sm text-gray-500">Selamat datang di Dashboard, pusat kontrol Anda untuk mendapatkan gambaran menyeluruh tentang data dalam REDUNION. Di sini, Anda dapat mengakses wawasan berharga seperti status segmentasi dari gambar-gambar, distribusi warna di seluruh gambar yang diunggah, dan jumlah segmentasi untuk berbagai jenis segmentasi.</p>
             <!-- Chart JS For Segmentation Summary -->
             <div class="flex flex-row space-x-2">
-                <div class="flex w-96 flex-col space-y-2">
-                    <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Image Uploads Segmented</h1>
-                        <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                                <canvas id="chartku" class="w-full" height="230"></canvas>
-                        </div>
-                        <p class="text-sm text-gray-500">Segmented image uploads are the number of uploads by users, and the number of images from users that have not been segmented<span class="bg-red-500 text-white px-2 py-1 rounded-md ml-2">{{ chartjs.num_images_not_segmented_user }} images</span></p>
-                    </div>
-                </div>
                 <div class="flex-1 flex-col space-y-2">
                     <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Number of Users and Segmented Images vs. Not yet segmented</h1>
+                        <h1 class="text-xl font-bold text-gray-700">Jumlah Gambar yang Sudah dan Belum Disegmentasi</h1>
                         <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer2">
-                                <canvas id="chartku2" class="w-full" height="230"></canvas>
+                            <canvas id="chartku2" class="w-full" height="230"></canvas>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-500">Image uploads are the number of uploads by the user</p>
+                    <p class="text-sm text-gray-500">Unggahan gambar adalah jumlah unggahan oleh pengguna</p>
                     <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Color Distribution of User-Uploaded Images</h1>
+                        <h1 class="text-xl font-bold text-gray-700">Distribusi Warna dari Gambar yang Diunggah oleh Pengguna</h1>
                         <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                                <canvas id="chartku3" class="w-full" height="230"></canvas>
+                            <canvas id="chartku3" class="w-full" height="230"></canvas>
                         </div>
                     </div>
                     <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Distribution of segmentation results based on the segmentation type</h1>
+                        <h1 class="text-xl font-bold text-gray-700">Distribusi Hasil Segmentasi Berdasarkan Jenis Segmentasi</h1>
                         <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                                <canvas id="chartku4" class="w-full" height="230"></canvas>
+                            <canvas id="chartku4" class="w-full" height="230"></canvas>
                         </div>
                     </div>
                 </div>
@@ -62,14 +53,6 @@
 
 {% block chartjs %} 
 <script>
-    // Chart 1
-    var labels_user = {{ chartjs.labels_user|safe }}
-    var data_user = {{ chartjs.data_user|safe }}
-    var num_labels_user = {{ chartjs.num_labels_user|safe }}
-    var backgroundColor_user = []
-    for (let i = 0; i < num_labels_user; i++) {
-        backgroundColor_user.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
-    }
 
     // Chart 2
     var labels_segmentation = {{ chartjs.labels_segmentation|safe }}
@@ -99,23 +82,10 @@
     }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('chartku').getContext('2d');
     const ctx2 = document.getElementById('chartku2').getContext('2d');
     const ctx3 = document.getElementById('chartku3').getContext('2d');
     const ctx4 = document.getElementById('chartku4').getContext('2d');
 
-    const data = {
-        labels: labels_user,
-        datasets: [
-                {
-                    label: 'Image Uploads Segmented',
-                    data: data_user,
-                    backgroundColor: backgroundColor_user,
-                    hoverOffset: 4
-                }
-            ]
-        };
-    
     const data2 = {
         labels: labels_segmentation,
         datasets: [
@@ -151,23 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             ]
         };
-
-    new Chart(ctx, {
-        type: 'pie',
-        data: data,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Chart Image Segmented by User'
-                }
-            }
-        },
-    });
 
     new Chart(ctx2, {
         type: 'bar',

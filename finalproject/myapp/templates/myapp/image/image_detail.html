@@ -68,65 +68,65 @@
                         <div class="flex flex-col space-y-1">
                             <p class="text-sm text-gray-500">
                                 <i class="fas fa-user"></i>
-                                <span class="ml-2">Uploaded by {{ image.uploader|title }}</span>
+                                <span class="ml-2">Diunggah oleh {{ image.uploader|title }}</span>
                             </p>
                             <p class="text-sm text-gray-500">
                                 <i class="fas fa-calendar"></i>
-                                <span class="ml-2">Uploaded at {{ image.created_at|naturalday }}</span>
+                                <span class="ml-2">Diunggah pada {{ image.created_at|naturalday }}</span>
                             </p>
                             <p class="text-sm text-gray-500">
                                 <i class="fas fa-clock"></i>
-                                <span class="ml-2">Uploaded at {{ image.created_at|naturaltime }}</span>
+                                <span class="ml-2">Diunggah pada {{ image.created_at|naturaltime }}</span>
                             </p>
                         </div>
                         <div class="flex flex-col space-y-1">
                             <p class="text-sm text-gray-500">
                                 <i class="fas fa-file"></i>
-                                <span class="ml-2">File Size {{ image.image.size|filesizeformat }}</span>
+                                <span class="ml-2">Ukuran File {{ image.image.size|filesizeformat }}</span>
                             </p>
                             <p class="text-sm text-gray-500">
                                 <i class="fas fa-image"></i>
-                                <span class="ml-2">Image Size {{ image.image.width|intcomma }}px x {{ image.image.height|intcomma }}px</span>
+                                <span class="ml-2">Ukuran Gambar {{ image.image.width|intcomma }}px x {{ image.image.height|intcomma }}px</span>
                             </p>
                             <p class="text-sm text-gray-500">
                                 <i class="fas fa-image"></i>
-                                <span class="ml-2">Image Channel {{ image.channel }} Channel</span>
+                                <span class="ml-2">Channel Gambar {{ image.channel }} Channel</span>
                             </p>
                         </div>
                         <div class="flex flex-col space-y-1">
                             <p class="text-sm text-gray-500">
                                 <i class="fa-solid fa-icons"></i>
-                                <span class="ml-2">Image Type {{ image.format }}</span>
+                                <span class="ml-2">Tipe Gambar {{ image.format }}</span>
                             </p>
                             <p class="text-sm text-gray-500">
                                 <i class="fa-solid fa-camera-retro"></i>
-                                <span class="ml-2">Image DPI {{ image.dpi|intcomma }} dpi</span>
+                                <span class="ml-2">DPI Gambar {{ image.dpi|intcomma }} dpi</span>
                             </p>
                             <p class="text-sm text-gray-500">
                                 <i class="fa-solid fa-people-arrows"></i>
-                                <span class="ml-2">Image Distance {{ image.distance|intcomma }} meter</span>
+                                <span class="ml-2">Jarak Gambar {{ image.distance|intcomma }} meter</span>
                             </p>
                             <p class="text-sm text-gray-500">
                                 <i class="fa-solid fa-palette"></i>
-                                <span class="ml-2">Image Color {{ image.color|title }}</span>
+                                <span class="ml-2">Warna Gambar {{ image.color|title }}</span>
                             </p>
                         </div>
                     </div>
                     {% if chartjs %}
                     <p>
-                        The Best Way to Segmentation this Image is 
+                        Cara Terbaik untuk Segmentasi Gambar ini adalah dengan menggunakan
                         <span class="text-red-500 font-bold">{{ chartjs.best.segmentation_type|title }}</span> 
-                        that has score of MSE <span class="text-red-500 font-bold">{{ chartjs.best.mse|floatformat:2 }}</span> 
-                        and PSNR <span class="text-red-500 font-bold">{{ chartjs.best.psnr|floatformat:2 }}</span> . 
-                        Image is Preprocessing with resize image to <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.resize_percent|intcomma }}%</span> 
-                        and brightness ajustment to <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.brightness_percent|intcomma }}%</span> 
-                        and contrast ajustment to <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.contrast_percent|intcomma }}%</span>. 
-                        Use image improvement with <span class="text-red-500 font-bold">
+                        yang menghasilkan skor MSE <span class="text-red-500 font-bold">{{ chartjs.best.mse|floatformat:2 }}</span> 
+                        dan PSNR <span class="text-red-500 font-bold">{{ chartjs.best.psnr|floatformat:2 }}</span> . 
+                        Gambar diproses sebelumnya dengan merubah ukuran gambar menjadi <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.resize_percent|intcomma }}%</span> 
+                        dan penyesuaian kecerahan menjadi <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.brightness_percent|intcomma }}%</span> 
+                        dan penyesuaian kontras menjadi <span class="text-red-500 font-bold">{{ chartjs.best.image_preprocessing.contrast_percent|intcomma }}%</span>. 
+                        Gunakan perbaikan gambar dengan <span class="text-red-500 font-bold">
                             {% if chartjs.best.image_preprocessing.gaussian_filter %}Gaussian Filter
                             {% elif chartjs.best.image_preprocessing.median_filter %}Median Filter
                             {% elif chartjs.best.image_preprocessing.mean_filter %}Mean Filter
                             {% endif %}
-                        </span> to improve image quality.
+                        </span> untuk meningkatkan kualitas gambar.
                     </p>
                     {% endif %}
                 </div>

@@ -21,65 +21,48 @@
         </div>
         <hr class="border-gray-200 mb-2">
         <div class="flex flex-col space-y-2">
-            <!-- list Image Upload -->
+            <!-- Daftar Unggahan Gambar -->
             <div class="flex-1 flex-row justify-between items-center">
                 <div class="flex flex-col space-y-1">
                     <div class="flex flex-col space-y-1">
-                        <h1 class="text-lg font-bold text-gray-700">Image Summary</h1>
-                        <p class="text-sm text-gray-500">Welcome to our comprehensive image upload, where you can find a consolidated summary of all the captivating images uploaded by our diverse community of users.</p>
+                        <h1 class="text-lg font-bold text-gray-700">Ringkasan Gambar</h1>
+                        <p class="text-sm text-gray-500">Selamat datang di ringkasan lengkap unggahan gambar, di mana Anda dapat menemukan ringkasan gabungan dari semua gambar menarik yang diunggah oleh komunitas pengguna kami yang beragam.</p>
                     </div>
-                    <!--flex-1 card information summary -->
+                    <!-- Kartu ringkasan informasi -->
                     <div class="flex flex-row justify-center items-start space-x-2">
                         <div class="flex-1 flex-col">
                             <div class="flex-1 flex-col space-y-1 shadow-md rounded-md p-4 border border-gray-200 border-opacity-50">
-                                <h1 class="text-lg font-bold text-gray-700">Total Images</h1>
-                                <p class="text-sm text-gray-500">Total image : {{ total_image|intcomma }} image</p>
-                                <p class="text-sm text-gray-500">From total image, {{ total_image|intcomma }} image preprocessed with step <span class="font-bold">54</span> recieved {{ total_image_preprocessing|intcomma }} image</p>
-                                <p class="text-sm text-gray-500">From total preprocessed image, {{ total_image_preprocessing|intcomma }} image processed with <span class="font-bold">{{ total_segmentation_type|intcomma }}</span> segmentation type and recieved {{ total_segmented_image|intcomma }} image</p>
-                                <!-- list button -->
+                                <h1 class="text-lg font-bold text-gray-700">Total Gambar</h1>
+                                <p class="text-sm text-gray-500">Total gambar : {{ total_image|intcomma }} gambar</p>
+                                <p class="text-sm text-gray-500">Dari total gambar, {{ total_image|intcomma }} gambar diproses dengan langkah <span class="font-bold">54</span> dan diterima {{ total_image_preprocessing|intcomma }} gambar</p>
+                                <p class="text-sm text-gray-500">Dari total gambar yang diproses, {{ total_image_preprocessing|intcomma }} gambar diproses dengan jenis segmentasi <span class="font-bold">{{ total_segmentation_type|intcomma }}</span> dan diterima {{ total_segmented_image|intcomma }} gambar</p>
+                                <!-- Daftar tombol -->
                                 <div class="flex flex-row justify-end items-center space-x-2">
                                     <a class="flex flex-row justify-center items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md" href="{% url 'myapp:image_list' %}">
                                         <i class="fas fa-image"></i>
-                                        <span>View Image</span>
+                                        <span>Lihat Gambar</span>
                                     </a>
                                     <a class="flex flex-row justify-center items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md" href="{% url 'myapp:segmentation' %}">
                                         <i class="fas fa-palette"></i>
-                                        <span>View Segmented Image</span>
+                                        <span>Lihat Gambar yang Disegmentasi</span>
                                     </a>
                                 </div>
                             </div>
                             <div class="flex-1 flex-col space-y-2 border border-gray-200 p-4 rounded-md shadow-md">
                                 <div class="flex flex-row justify-between items-start space-x-2">
                                     <div class="flex-1 flex-col space-y-1">
-                                        <h1 class="text-xl font-bold text-gray-700">Color Distribution of User-Uploaded Images</h1>
-                                        <p class="text-sm text-gray-500">View image graph with <span class="font-bold">Chart.js</span> library</p>
+                                        <h1 class="text-xl font-bold text-gray-700">Distribusi Warna dari Gambar yang Diunggah oleh Pengguna</h1>
+                                        <p class="text-sm text-gray-500">Lihat grafik gambar dengan library <span class="font-bold">Chart.js</span></p>
                                     </div>
                                     <a class="flex flex-row justify-start items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md" href="{% url 'myapp:image_graph_color' %}">
                                         <i class="fas fa-chart-bar"></i>
-                                        <span>View Graph</span>
+                                        <span>Lihat Grafik</span>
                                     </a>
                                 </div>
                                 <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                                        <canvas id="chartku3" class="w-full" height="230"></canvas>
+                                    <canvas id="chartku3" class="w-full" height="230"></canvas>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex-1 flex-col space-y-1 shadow-md rounded-md p-4 border border-gray-200 border-opacity-50">
-                            <div class="flex flex-row justify-between items-center space-x-2">
-                                <div>
-                                    <h1 class="text-lg font-bold text-gray-700">View All Images Graph</h1>
-                                    <p class="text-sm text-gray-500">View image graph with <span class="font-bold">Chart.js</span> library</p>
-                                </div>
-                                <a class="flex flex-row justify-center items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md" href="{% url 'myapp:image_graph' %}">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <span>View Graph</span>
-                                </a>
-                            </div>
-                            <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                                    <canvas id="chartku" class="w-full" height="230"></canvas>
-                            </div>
-                            <p class="text-sm text-gray-500">Segmented image uploads are the number of uploads by users, and the number of images from users that have not been segmented<span class="bg-red-500 text-white px-2 py-1 rounded-md ml-2">{{ chartjs.num_images_not_segmented_user }} images</span></p>
-                            <!-- list button -->
                         </div>
                     </div>
                 </div>
@@ -91,14 +74,6 @@
 
 {% block chartjs %} 
 <script>
-    // Chart 1
-    var labels_user = {{ chartjs.labels_user|safe }}
-    var data_user = {{ chartjs.data_user|safe }}
-    var num_labels_user = {{ chartjs.num_labels_user|safe }}
-    var backgroundColor_user = []
-    for (let i = 0; i < num_labels_user; i++) {
-        backgroundColor_user.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
-    }
 
     // Chart 3
     var labels_color = {{ chartjs.labels_color|safe }}
@@ -110,19 +85,7 @@
     }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('chartku').getContext('2d');
     const ctx3 = document.getElementById('chartku3').getContext('2d');
-    const data = {
-        labels: labels_user,
-        datasets: [
-                {
-                    label: 'Image Uploads Segmented',
-                    data: data_user,
-                    backgroundColor: backgroundColor_user,
-                    hoverOffset: 4
-                }
-            ]
-        };
 
     const data3 = {
         labels: labels_color,
@@ -135,23 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             ]
         };
-
-    new Chart(ctx, {
-        type: 'pie',
-        data: data,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Chart Image Segmented by User'
-                }
-            }
-        },
-    });
 
     new Chart(ctx3, {
         type: 'bar',

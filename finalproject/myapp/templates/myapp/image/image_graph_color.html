@@ -23,172 +23,171 @@
         <div class="flex flex-col space-y-2">
             <div class="flex flex-row justify-between items-center">
                 <div class="flex flex-col space-y-2">
-                    <p class="text-gray-700">Graph of Image upload per day</p>
+                    <p class="text-gray-700">Grafik Unggahan Gambar per Hari</p>
                 </div>
                 <div class="flex flex-row justify-between items-center mb-2">
-                    
-                    <div class="flex flex-row space-x-2 w-auto">
-                        <!-- button export Segmentation -->
-                        <button onclick="printDiv('divPrint')" class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2">
-                            <i class="fas fa-print"></i>
-                            <span>Print</span>
+                                    <div class="flex flex-row space-x-2 w-auto">
+                    <!-- tombol export Segmentation -->
+                    <button onclick="printDiv('divPrint')" class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 space-x-2">
+                        <i class="fas fa-print"></i>
+                        <span>Cetak</span>
+                    </button>
+                    <!-- tombol selected Segmentation -->
+                    <form class="flex flex-row justify-center items-center space-x-2 w-auto" action="" method="GET">
+                        <!-- input pilihan select -->
+                        <select name="search" class="flex flex-row justify-center items-center rounded-md px-4 py-2 text-gray-700 w-60">
+                            <option value="all" {% if request.GET.search == 'all' %} selected {% endif %}>Semua</option>
+                            {% for color in color_dict %}
+                                <option value="{{ color }}" {% if request.GET.search == color %} selected {% endif %}>{{ color }}</option>
+                            {% endfor %}
+                        </select>
+                        <!-- tombol selected Segmentation -->
+                        <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
+                            <i class="fas fa-filter"></i>
+                            <span class="ml-2">Filter</span>
                         </button>
-                        <!-- button selected Segmentation -->
-                        <form class="flex flex-row justify-center items-center space-x-2 w-auto" action="" method="GET">
-                            <!-- input select option -->
-                            <select name="search" class="flex flex-row justify-center items-center rounded-md px-4 py-2 text-gray-700 w-60">
-                                <option value="all" {% if request.GET.search == 'all' %} selected {% endif %}>All</option>
-                                {% for color in color_dict %}
-                                    <option value="{{ color }}" {% if request.GET.search == color %} selected {% endif %}>{{ color }}</option>
-                                {% endfor %}
-                            </select>
-                            <!-- button selected Segmentation -->
-                            <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700">
-                                <i class="fas fa-filter"></i>
-                                <span class="ml-2">Filter</span>
-                            </button>
-                        </form>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2" id="divPrint">
+            <h1 class="text-3xl font-bold text-gray-700 hidden m-4" id="H1divPrint">Hasil Segmen Gambar</h1>
+            <div class="container segmentationView" id="masukkanboy">
+                <canvas id="myChart" height="100px"></canvas>
+            </div>
+            <!-- Hasil -->
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-xl font-bold text-gray-700">Hasil Segmen Terbaik</h1>
+                <p class="space-y-2 text-gray-700 space-x-2">
+                    Dari gambar yang diunggah, terdapat 
+                    {% if total_data < 1 %} <span class="text-red-500 font-bold">tidak ada</span> 
+                    {% else %} <span class="text-red-500 font-bold"> {{ total_data|floatformat:0 }}</span>
+                    {% endif %} 
+                    gambar yang diunggah. Gambar-gambar tersebut memiliki berbagai warna: 
+                    {% if request.GET.search == 'all' %} <span class="text-red-500 font-bold">berbagai macam</span> 
+                    {% elif request.GET.search %} <span class="text-red-500 font-bold">{{ request.GET.search }}</span> 
+                    {% else %} <span class="text-red-500 font-bold">berbagai macam</span> {% endif %}. 
+                    Segmen gambar terbaik adalah dengan warna latar belakang <span class="text-red-500 font-bold">{{ best.color }}</span> menggunakan segmentasi 
+                    <span class="text-red-500 font-bold">
+                        {{ best.segmentation }}</span> dengan praproses gambar diubah ukurannya menjadi
+                    <span class="text-red-500 font-bold">
+                        {{ best.resize_percent }} %
+                    </span> dan disesuaikan kecerahan gambar menjadi
+                    <span class="text-red-500 font-bold">
+                        {{ best.brightness_percent }} %
+                    </span> serta penyesuaian kontras gambar menjadi
+                    <span class="text-red-500 font-bold">
+                        {{ best.contrast_percent }} %
+                    </span> dan jarak antara gambar yang diambil dengan objek adalah
+                    <span class="text-red-500 font-bold">
+                        {{ best.distance }} cm
+                    </span> menggunakan filter 
+                    <span class="text-red-500 font-bold">
+                            {% if best.gaussian_filter %}Gaussian Filter
+                            {% elif best.median_filter %}Median Filter
+                            {% elif best.mean_filter %}Mean Filter
+                            {% endif %}
+                    </span>.
+                    Hasilnya adalah MSE sebesar
+                    <span class="text-red-500 font-bold">
+                        {{ best.mse }} dB
+                    </span> dengan PSNR sebesar
+                    <span class="text-red-500 font-bold">
+                        {{ best.psnr }} dB
+                    </span>.
+                </p>
+                <!-- gambar flex-1 -->
+                <div class="flex flex-row justify-between items-center space-x-2">
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Gambar</p>
+                        <img src="/{{ best.image_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                    </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Praproses Warna</p>
+                        <img src="/{{ best.image_pre_color_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                    </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Praproses Gray</p>
+                        <img src="/{{ best.image_pre_gray_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                    </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Ground Truth Gambar</p>
+                        <img src="/{{ best.image_gt }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                    </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Gambar Tergambar</p>
+                        <img src="/{{ best.image_seg }}" alt="image" class="w-40 h-40 object-cover rounded-md">
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col space-y-2" id="divPrint">
-                <h1 class="text-3xl font-bold text-gray-700 hidden m-4" id="H1divPrint">Segmentation Image Result</h1>
-                <div class="container segmentationView" id="masukkanboy">
-                    <canvas id="myChart" height="100px"></canvas>
-                </div>
-                <!-- Result -->
-                <div class="flex flex-col space-y-2">
-                    <h1 class="text-xl font-bold text-gray-700">Result Best Segmentation</h1>
-                    <p class="space-y-2 text-gray-700 space-x-2">
-                        From the uploaded image, there are 
-                        {% if total_data < 1 %} <span class="text-red-500 font-bold">no</span> 
-                        {% else %} <span class="text-red-500 font-bold"> {{ total_data|floatformat:0 }}</span>
-                        {% endif %} 
-                        uploaded images. The uploaded images have different colors: 
-                        {% if request.GET.search == 'all' %} <span class="text-red-500 font-bold">various</span> 
-                        {% elif request.GET.search %} <span class="text-red-500 font-bold">{{ request.GET.search }}</span> 
-                        {% else %} <span class="text-red-500 font-bold">various</span> {% endif %}. 
-                        The best image segmentation is with a background color of <span class="text-red-500 font-bold">{{ best.color }}</span> using segmentation 
-                        <span class="text-red-500 font-bold">
-                            {{ best.segmentation }}</span> with resized image preprocessing
-                        <span class="text-red-500 font-bold">
-                            {{ best.resize_percent }} %
-                        </span> and adjusted brightness
-                        <span class="text-red-500 font-bold">
-                            {{ best.brightness_percent }} %
-                        </span> as well as contrast adjustment
-                        <span class="text-red-500 font-bold">
-                            {{ best.contrast_percent }} %
-                        </span> and the distance between the captured image and the object is
-                        <span class="text-red-500 font-bold">
-                            {{ best.distance }} cm
-                        </span> using the 
-                        <span class="text-red-500 font-bold">
-                                {% if best.gaussian_filter %}Gaussian Filter
-                                {% elif best.median_filter %}Median Filter
-                                {% elif best.mean_filter %}Mean Filter
-                                {% endif %}
-                        </span>
-                        filter. It results in a MSE of
-                        <span class="text-red-500 font-bold">
-                            {{ best.mse }} dB
-                        </span> with a PSNR of
-                        <span class="text-red-500 font-bold">
-                            {{ best.psnr }} dB
-                        </span>.
-                    </p>
-                    <!-- image flex-1 -->
-                    <div class="flex flex-row justify-between items-center space-x-2">
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image</p>
-                            <img src="/{{ best.image_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Pre Color</p>
-                            <img src="/{{ best.image_pre_color_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Pre Gray</p>
-                            <img src="/{{ best.image_pre_gray_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Ground Truth</p>
-                            <img src="/{{ best.image_gt }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Segmented</p>
-                            <img src="/{{ best.image_seg }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
+            <!-- Hasil -->
+            <div class="flex flex-col space-y-2">
+                <h1 class="text-xl font-bold text-gray-700">Hasil Segmen Terburuk</h1>
+                <p class="space-y-2 text-gray-700 space-x-2">
+                    Dari gambar yang diunggah, terdapat 
+                    {% if total_data < 1 %} <span class="text-red-500 font-bold">tidak ada</span> 
+                    {% else %} <span class="text-red-500 font-bold"> {{ total_data|floatformat:0 }}</span>
+                    {% endif %} 
+                    gambar yang diunggah. Gambar-gambar tersebut memiliki berbagai warna: 
+                    {% if request.GET.search == 'all' %} <span class="text-red-500 font-bold">berbagai macam</span> 
+                    {% elif request.GET.search %} <span class="text-red-500 font-bold">{{ request.GET.search }}</span> 
+                    {% else %} <span class="text-red-500 font-bold">berbagai macam</span> {% endif %}. 
+                    Segmen gambar terburuk adalah dengan warna latar belakang <span class="text-red-500 font-bold">{{ worst.color }}</span> menggunakan segmentasi 
+                    <span class="text-red-500 font-bold">
+                        {{ worst.segmentation }}</span> dengan praproses gambar diubah ukurannya menjadi
+                    <span class="text-red-500 font-bold">
+                        {{ worst.resize_percent }} %
+                    </span> dan disesuaikan kecerahan gambar menjadi
+                    <span class="text-red-500 font-bold">
+                        {{ worst.brightness_percent }} %
+                    </span> serta penyesuaian kontras gambar menjadi
+                    <span class="text-red-500 font-bold">
+                        {{ worst.contrast_percent }} %
+                    </span> dan jarak antara gambar yang diambil dengan objek adalah
+                    <span class="text-red-500 font-bold">
+                        {{ worst.distance }} cm
+                    </span> menggunakan filter 
+                    <span class="text-red-500 font-bold">
+                            {% if worst.gaussian_filter %}Gaussian Filter
+                            {% elif worst.median_filter %}Median Filter
+                            {% elif worst.mean_filter %}Mean Filter
+                            {% endif %}
+                    </span>.
+                    Hasilnya adalah MSE sebesar
+                    <span class="text-red-500 font-bold">
+                        {{ worst.mse }} dB 
+                    </span> dengan PSNR sebesar
+                    <span class="text-red-500 font-bold">
+                        {{ worst.psnr }} dB
+                    </span>.
+                </p>
+                <!-- gambar flex-1 -->
+                <div class="flex flex-row justify-between items-center space-x-2">
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Gambar</p>
+                        <img src="/{{ worst.image_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
                     </div>
-                </div>
-                <!-- Result -->
-                <div class="flex flex-col space-y-2">
-                    <h1 class="text-xl font-bold text-gray-700">Result Worst Segmentation</h1>
-                    <p class="space-y-2 text-gray-700 space-x-2">
-                        From the uploaded image, there are 
-                        {% if total_data < 1 %} <span class="text-red-500 font-bold">no</span> 
-                        {% else %} <span class="text-red-500 font-bold"> {{ total_data|floatformat:0 }}</span>
-                        {% endif %} 
-                        uploaded images. The uploaded images have different colors: 
-                        {% if request.GET.search == 'all' %} <span class="text-red-500 font-bold">various</span> 
-                        {% elif request.GET.search %} <span class="text-red-500 font-bold">{{ request.GET.search }}</span> 
-                        {% else %} <span class="text-red-500 font-bold">various</span> {% endif %}. 
-                        The worst image segmentation is with a background color of <span class="text-red-500 font-bold">{{ worst.color }}</span> using segmentation 
-                        <span class="text-red-500 font-bold">
-                            {{ worst.segmentation }}</span> with resized image preprocessing
-                        <span class="text-red-500 font-bold">
-                            {{ worst.resize_percent }} %
-                        </span> and adjusted brightness
-                        <span class="text-red-500 font-bold">
-                            {{ worst.brightness_percent }} %
-                        </span> as well as contrast adjustment
-                        <span class="text-red-500 font-bold">
-                            {{ worst.contrast_percent }} %
-                        </span> and the distance between the captured image and the object is
-                        <span class="text-red-500 font-bold">
-                            {{ worst.distance }} cm
-                        </span> using the 
-                        <span class="text-red-500 font-bold">
-                                {% if worst.gaussian_filter %}Gaussian Filter
-                                {% elif worst.median_filter %}Median Filter
-                                {% elif worst.mean_filter %}Mean Filter
-                                {% endif %}
-                        </span>
-                        filter. It results in a MSE of
-                        <span class="text-red-500 font-bold">
-                            {{ worst.mse }} dB 
-                        </span> with a PNSR of
-                        <span class="text-red-500 font-bold">
-                            {{ worst.psnr }} dB
-                        </span>.
-                    </p>
-                    <!-- image flex-1 -->
-                    <div class="flex flex-row justify-between items-center space-x-2">
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image</p>
-                            <img src="/{{ worst.image_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Pre Color</p>
-                            <img src="/{{ worst.image_pre_color_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Pre Gray</p>
-                            <img src="/{{ worst.image_pre_gray_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Ground Truth</p>
-                            <img src="/{{ worst.image_gt }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
-                        <div class="flex-1 flex-col space-y-2">
-                            <p class="text-gray-700">Image Segmented</p>
-                            <img src="/{{ worst.image_seg }}" alt="image" class="w-40 h-40 object-cover rounded-md">
-                        </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Praproses Warna</p>
+                        <img src="/{{ worst.image_pre_color_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                    </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Praproses Gray</p>
+                        <img src="/{{ worst.image_pre_gray_url }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                    </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Ground Truth Gambar</p>
+                        <img src="/{{ worst.image_gt }}" alt="image" class="w-40 h-40 object-cover rounded-md">
+                    </div>
+                    <div class="flex-1 flex-col space-y-2">
+                        <p class="text-gray-700">Gambar Tergambar</p>
+                        <img src="/{{ worst.image_seg }}" alt="image" class="w-40 h-40 object-cover rounded-md">
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 {% endblock content %}
 {% block chartjs%}
