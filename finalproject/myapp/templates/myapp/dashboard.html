@@ -24,6 +24,15 @@
             <p class="text-sm text-gray-500">Selamat datang di Dashboard, pusat kontrol Anda untuk mendapatkan gambaran menyeluruh tentang data dalam REDUNION. Di sini, Anda dapat mengakses wawasan berharga seperti status segmentasi dari gambar-gambar, distribusi warna di seluruh gambar yang diunggah, dan jumlah segmentasi untuk berbagai jenis segmentasi.</p>
             <!-- Chart JS For Segmentation Summary -->
             <div class="flex flex-row space-x-2">
+                <div class="flex w-96 flex-col space-y-2">
+                    <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
+                        <h1 class="text-xl font-bold text-gray-700">Image Uploads Segmented</h1>
+                        <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
+                                <canvas id="chartku" class="w-full" height="230"></canvas>
+                        </div>
+                        <p class="text-sm text-gray-500">Segmented image uploads are the number of uploads by users, and the number of images from users that have not been segmented<span class="bg-red-500 text-white px-2 py-1 rounded-md ml-2">{{ chartjs.num_images_not_segmented_user }} images</span></p>
+                    </div>
+                </div>
                 <div class="flex-1 flex-col space-y-2">
                     <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
                         <h1 class="text-xl font-bold text-gray-700">Jumlah Gambar yang Sudah dan Belum Disegmentasi</h1>
@@ -86,6 +95,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx3 = document.getElementById('chartku3').getContext('2d');
     const ctx4 = document.getElementById('chartku4').getContext('2d');
 
+    const data = {
+        labels: labels_user,
+        datasets: [
+                {
+                    label: 'Image Uploads Segmented',
+                    data: data_user,
+                    backgroundColor: backgroundColor_user,
+                    hoverOffset: 4
+                }
+            ]
+        };
+    
     const data2 = {
         labels: labels_segmentation,
         datasets: [
