@@ -114,7 +114,10 @@ class DashboardClassView(ListView):
             queryset = queryset.filter(segmentation_type=segmentation_type_query)
 
         # total image from queryset dibagi dengan segmentation type
-        total_image_seg = queryset.count() / len(csegmentation_type_dict)
+        if segmentation_type_query and segmentation_type_query != "all":
+            total_image_seg = queryset.count()
+        else:
+            total_image_seg = queryset.count() / len(csegmentation_type_dict)
         # jadikan integer
         total_image_seg = int(total_image_seg)
 
