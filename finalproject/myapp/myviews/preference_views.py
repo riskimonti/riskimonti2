@@ -11,6 +11,18 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.db.models import (
+    Q,
+    Prefetch,
+    Count,
+    Subquery,
+    OuterRef,
+    F,
+    Avg,
+    Max,
+    Min,
+    Sum,
+)
 
 
 class IndexClassView(View):
@@ -64,147 +76,69 @@ class DashboardClassView(ListView):
         uploaders = []
         for name, count in zip(uploaders_name, uploaders_count):
             uploaders.append({"name": name, "count": count})
-        # Get categories color name
-        colors = queryset.values_list("color", flat=True).distinct()
-
-        # Mengambil data Image yang memiliki ImagePreprocessing dan minimal satu Segmentation
-        images_segmented = Image.objects.filter(
-            imagepreprocessing__isnull=False,
-            imagepreprocessing__segmentations__isnull=False,
+        color_query = self.request.GET.get("color")
+        segmentation_type_query = self.request.GET.get("type")
+        segmentation_types = SegmentationResult.objects.values(
+            "segmentation_type"
         ).distinct()
 
-        # Menginisialisasi dictionary untuk menyimpan jumlah data berdasarkan pengguna
-        data_count = {}
+        # Retrieve all ImagePreprocessing objects that have segmentation results
+        image_preprocessings = ImagePreprocessing.objects.filter(
+            segmentations__segmentation_type__in=segmentation_types
+        ).distinct()
+        # Get the corresponding Image objects
+        images = Image.objects.filter(
+            imagepreprocessing__in=image_preprocessings
+        ).distinct()
+        queryset = SegmentationResult.objects.filter(
+            image__in=images,
+            segmentation_type__in=segmentation_types,
+            rank=1,
+        ).order_by("image", "rank")
+        ccolor_dict = queryset.values_list("image__color", flat=True).distinct()
+        ccolor_dict = list(ccolor_dict)
+        # ambil semua nilai unik color dari list color_dict
+        ccolor_dict = list(set(ccolor_dict))
+        print(ccolor_dict)
+        csegmentation_type_dict = queryset.values_list(
+            "segmentation_type", flat=True
+        ).distinct()
+        csegmentation_type_dict = list(csegmentation_type_dict)
+        csegmentation_type_dict = list(set(csegmentation_type_dict))
+        if color_query and color_query != "all":
+            # Jika ada parameter pencarian, filter queryset berdasarkan kondisi color
+            queryset = queryset.filter(image__color=color_query)
 
-        # Menghitung jumlah data Image yang telah di-segmentasi berdasarkan pengguna
-        for image in images_segmented:
-            uploader = image.uploader.first_name + " " + image.uploader.last_name
-            if uploader in data_count:
-                data_count[uploader] += 1
-            else:
-                data_count[uploader] = 1
+        if segmentation_type_query and segmentation_type_query != "all":
+            # Jika ada parameter pencarian, filter queryset berdasarkan kondisi segmentation_type
+            queryset = queryset.filter(segmentation_type=segmentation_type_query)
 
-        # Menyusun label dan data
-        labels_user = []
-        data_user = []
+        # total image from queryset dibagi dengan segmentation type
+        total_image_seg = queryset.count() / len(csegmentation_type_dict)
+        # jadikan integer
+        total_image_seg = int(total_image_seg)
 
-        for uploader, count in data_count.items():
-            labels_user.append(uploader)
-            data_user.append(count)
-
-        # Hitung label
-        num_labels_user = len(labels_user)
-
-        # Mengambil data Image yang belum memiliki segmentasi
-        images_not_segmented = Image.objects.filter(
-            imagepreprocessing__isnull=False,
-            imagepreprocessing__segmentations__isnull=True,
+        # Calculate the average of jaccard_score, rand_score, and f1_score
+        average_scores = queryset.aggregate(
+            avg_mse=Avg("segment__mse"),
+            avg_psnr=Avg("segment__psnr"),
         )
-
-        # Menghitung jumlah data Image yang sudah di-segmentasi
-        images_segmented2 = Image.objects.filter(
-            imagepreprocessing__isnull=False,
-            imagepreprocessing__segmentations__isnull=False,
-        )
-
-        # Menghitung jumlah data Image yang belum di-segmentasi
-        num_images_not_segmented_user = images_not_segmented.count()
-
-        # menghitung jumlah data Image yang telah di-segmentasi
-        num_images_segmented = (images_segmented2.count() / 54) / 2
-
-        # Menghitung jumlah data Image yang telah di-segmentasi berdasarkan pengguna
-        for image in images_segmented:
-            uploader = image.uploader.first_name + " " + image.uploader.last_name
-            if uploader in data_count:
-                data_count[uploader] += 1
-            else:
-                data_count[uploader] = 1
-
-        # Menghitung jumlah data Image yang belum di-segmentasi
-        num_images_not_segmented_user = images_not_segmented.count() / 54
-
-        # Mengambil data Image yang memiliki ImagePreprocessing
-        images_with_preprocessing = Image.objects.filter(
-            imagepreprocessing__isnull=False
-        )
-
-        # Menghitung distribusi warna gambar yang diunggah oleh pengguna
-        color_distribution = {}
-
-        for image in images_with_preprocessing:
-            color = image.color
-            if color in color_distribution:
-                color_distribution[color] += 1
-            else:
-                color_distribution[color] = 1
-
-        # Menyusun label dan data
-        labels_color = list(color_distribution.keys())
-        data_color = list(color_distribution.values())
-
-        # bagi data_color dengan jumlah step preprocessing (54)
-        data_color = [data / 54 for data in data_color]
-
-        # ubah data dari dark-mud-brown menjadi Dark Mud Brown
-        labels_color = [label.replace("-", " ").title() for label in labels_color]
-
-        # Mengambil data Segmentation
-        segmentations = Segmentation.objects.all()
-
-        # Menghitung jumlah segmentasi untuk setiap jenis segmentasi
-        segmentation_count = {}
-
-        for segmentation in segmentations:
-            segmentation_type = segmentation.segmentation_type
-            if segmentation_type in segmentation_count:
-                segmentation_count[segmentation_type] += 1
-            else:
-                segmentation_count[segmentation_type] = 1
-
-        # Menyusun label dan data
-        labels_segmentation_result = list(segmentation_count.keys())
-        data_segmentation_result = list(segmentation_count.values())
-
-        # bagi data_segmentation_result dengan jumlah step preprocessing (54)
-        data_segmentation_result = [data / 54 for data in data_segmentation_result]
-
-        # ubah data dari sobel menjadi Sobel
-        labels_segmentation_result = [
-            label.replace("-", " ").title() for label in labels_segmentation_result
-        ]
-
-        chartjs_data = {
-            "labels_user": json.dumps(list(labels_user)),
-            "data_user": json.dumps(list(data_user)),
-            "num_labels_user": num_labels_user,
-            "num_images_not_segmented_user": num_images_not_segmented_user,
-            "labels_segmentation": json.dumps(["Segmented", "Not Segmented"]),
-            "data_segmentation": json.dumps(
-                [num_images_segmented, num_images_not_segmented_user]
-            ),
-            "num_labels_segmentation": num_labels_user,
-            "labels_color": json.dumps(labels_color),
-            "data_color": json.dumps(data_color),
-            "num_labels_color": len(labels_color),
-            "labels_segmentation_result": json.dumps(labels_segmentation_result),
-            "data_segmentation_result": json.dumps(data_segmentation_result),
-            "num_labels_segmentation_result": len(labels_segmentation_result),
-        }
-
-        # #print("labels_segmentation_result", labels_segmentation_result)
-        # #print("data_segmentation_result", data_segmentation_result)
+        avg_mse = average_scores["avg_mse"]
+        avg_psnr = average_scores["avg_psnr"]
 
         self.extra_context = {
+            "color_dict": ccolor_dict,
+            "segmentation_type_dict": csegmentation_type_dict,
             "uploaders": uploaders,
-            "colors": colors,
             "title": "Dashboard",
             "contributor": "REDUNION Team",
             "content": "Dashboard, a place to see the overview of the data in REDUNION. You can see the number of data uploaded by each user, the number of segmented and unsegmented data, the color distribution of the images, and the number of segmentations for each segmentation type.",
             "app_css": "myapp/css/styles.css",
             "app_js": "myapp/js/scripts.js",
             "logo": "myapp/images/Logo.png",
-            "chartjs": chartjs_data,
+            "avg_mse": avg_mse,
+            "avg_psnr": avg_psnr,
+            "total_image_seg": total_image_seg,
         }
 
         return queryset

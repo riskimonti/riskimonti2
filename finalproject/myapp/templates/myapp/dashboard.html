@@ -1,6 +1,6 @@
 {% extends "myapp/core_base2.html" %}
 {% load static %}
-
+{% load humanize %}
 {% block content %}
 <!-- content overflow -->
 <div class="flex-1 flex-col w-5/6 fixed right-0 top-14 h-[calc(100vh-3.5rem)] px-4 py-4 overflow-y-auto overflow-hidden" id="content">
@@ -21,27 +21,83 @@
         </div>
         <hr class="border-gray-200 mb-2">
         <div class="flex flex-col space-y-2">
-            <p class="text-sm text-gray-500">Selamat datang di Dashboard, pusat kontrol Anda untuk mendapatkan gambaran menyeluruh tentang data dalam REDUNION. Di sini, Anda dapat mengakses wawasan berharga seperti status segmentasi dari gambar-gambar, distribusi warna di seluruh gambar yang diunggah, dan jumlah segmentasi untuk berbagai jenis segmentasi.</p>
-            <!-- Chart JS For Segmentation Summary -->
+            <p class="text-sm text-gray-500">Selamat datang di Dashboard, pusat kontrol Anda untuk mendapatkan gambaran menyeluruh tentang data dalam REDUNION.</p>
             <div class="flex flex-row space-x-2">
-                <div class="flex-1 flex-col space-y-2">
-                    <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Jumlah Gambar yang Sudah dan Belum Disegmentasi</h1>
-                        <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer2">
-                            <canvas id="chartku2" class="w-full" height="230"></canvas>
+                <div class="flex-1 flex-space-x-2">
+                    <div class="flex-1 flex-col bg-white rounded-md p-4 shadow-md z-10">
+                        <div class="flex flex-row justify-between items-center mb-2">
+                            <div class="flex flex-col space-y-2">
+                                <h1 class="text-l font-bold text-gray-700">Hasil Segmentasi 
+                                    {% if request.GET.type == 'all' %}
+                                        Semua Tipe
+                                    {% else %}
+                                        {{ request.GET.type|capfirst }}
+                                    {% endif %}
+                                    dengan Warna
+                                    {% if request.GET.color == 'all' %}
+                                        Semua Warna
+                                    {% else %}
+                                        {{ request.GET.color|capfirst }}
+                                    {% endif %}
+                                </h1>
+                            </div>
+                            <div class="flex flex-row space-x-2">
+                                <!-- form filter -->
+                                <form class="flex flex-row justify-center items-center space-x-2" method="GET">
+                                    <select name="type" class="flex flex-row justify-center items-center rounded-md px-4 py-2 text-gray-700 w-60">
+                                        <option value="all" {% if request.GET.type == 'all' %} selected {% endif %}>All</option>
+                                        {% for segmentation_type in segmentation_type_dict %}
+                                            <option value="{{ segmentation_type }}" {% if request.GET.type == segmentation_type %} selected {% endif %}>{{ segmentation_type }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <!-- input -->
+                                    <select name="color" class="flex flex-row justify-center items-center rounded-md px-4 py-2 text-gray-700 w-60">
+                                        <option value="all" {% if request.GET.color == 'all' %} selected {% endif %}>All</option>
+                                        {% for color in color_dict %}
+                                            <option value="{{ color }}" {% if request.GET.color == color %} selected {% endif %}>{{ color }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button class="flex flex-row justify-center items-center bg-gray-200 hover:bg-gray-300 rounded-md px-4 py-2 text-gray-700 ml-2" type="submit">
+                                        <i class="fas fa-filter"></i>
+                                        <span class="ml-2">Filter</span>
+                                    </button>
+                                </form> 
+                            </div>
                         </div>
-                    </div>
-                    <p class="text-sm text-gray-500">Unggahan gambar adalah jumlah unggahan oleh pengguna</p>
-                    <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Distribusi Warna dari Gambar yang Diunggah oleh Pengguna</h1>
-                        <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                            <canvas id="chartku3" class="w-full" height="230"></canvas>
-                        </div>
-                    </div>
-                    <div class="flex-1 flex-col space-y-2 border border-gray-200 p-2 rounded-md shadow-md">
-                        <h1 class="text-xl font-bold text-gray-700">Distribusi Hasil Segmentasi Berdasarkan Jenis Segmentasi</h1>
-                        <div class="flex flex-col flex-wrap justify-start items-start" id="chartContainer">
-                            <canvas id="chartku4" class="w-full" height="230"></canvas>
+                        <div class="flex flex-col space-y-2">
+                            <div class="flex flex-row justify-between items-center space-x-2">
+                                <div class="flex-1 flex-col space-y-2 bg-blue-200 rounded-md p-4 shadow-md z-10">
+                                    <h1 class="text-xl font-sm text-gray-700">Total Gambar Tersegmentasi</h1>
+                                    <h1 class="text-2xl font-bold text-gray-700">{{ total_image_seg }} Gambar</h1>
+                                </div>
+                            </div>
+                            <div class="flex flex-row justify-between items-center space-x-2">
+                                <div class="flex-1 flex-col space-y-2 bg-yellow-200 rounded-md p-4 shadow-md z-10">
+                                    <h1 class="text-xl font-sm text-gray-700">Rata-rata Hasil Pengujian</h1>
+                                    <h1 class="text-l font-normal text-gray-700">Peak Signal to Noise Ratio (PSNR)</h1>
+                                    <h1 class="text-3xl font-bold text-gray-700">{{ avg_psnr|floatformat:3|intcomma }} dB</h1>
+                                    <!-- link ke hasil -->
+                                    <a href="{% url 'myapp:image_table_color' %}?type={% if request.GET.type == 'all' %}all{% else %}{{ request.GET.type }}{% endif %}&color={% if request.GET.color == 'all' %}all{% else %}{{ request.GET.color }}{% endif %}" class="text-sm text-blue-500 hover:underline">
+                                        Lihat Hasil
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                                <div class="flex-1 flex-col space-y-2 bg-red-200 rounded-md p-4 shadow-md z-10">
+                                    <h1 class="text-xl font-sm text-gray-700">Rata-rata Hasil Pengujian</h1>
+                                    <h1 class="text-l font-normal text-gray-700">Mean Square Error (MSE)</h1>
+                                    <h1 class="text-3xl font-bold text-gray-700">{{ avg_mse|floatformat:3|intcomma }} dB</h1>
+                                    <!-- link ke hasil -->
+                                    <a href="{% url 'myapp:image_table_color' %}?type={% if request.GET.type == 'all' %}all{% else %}{{ request.GET.type }}{% endif %}&color={% if request.GET.color == 'all' %}all{% else %}{{ request.GET.color }}{% endif %}" class="text-sm text-blue-500 hover:underline">
+                                        Lihat Hasil
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- link ke hasil -->
+                            <a href="{% url 'myapp:image_table_color' %}?type={% if request.GET.type == 'all' %}all{% else %}{{ request.GET.type }}{% endif %}&color={% if request.GET.color == 'all' %}all{% else %}{{ request.GET.color }}{% endif %}" class="text-sm text-blue-500 hover:underline">
+                                Lihat Hasil
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -52,126 +108,5 @@
 {% endblock content %}
 
 {% block chartjs %} 
-<script>
 
-    // Chart 2
-    var labels_segmentation = {{ chartjs.labels_segmentation|safe }}
-    var data_segmentation = {{ chartjs.data_segmentation|safe }}
-    var num_labels_segmentation = {{ chartjs.num_labels_segmentation|safe }}
-    var backgroundColor_segmentation = []
-    for (let i = 0; i < num_labels_segmentation; i++) {
-        backgroundColor_segmentation.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
-    }
-
-    // Chart 3
-    var labels_color = {{ chartjs.labels_color|safe }}
-    var data_color = {{ chartjs.data_color|safe }}
-    var num_labels_color = {{ chartjs.num_labels_color|safe }}
-    var backgroundColor_color = []
-    for (let i = 0; i < num_labels_color; i++) {
-        backgroundColor_color.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
-    }
-
-    // Chart 4
-    var labels_segmentation_result = {{ chartjs.labels_segmentation_result|safe }}
-    var data_segmentation_result = {{ chartjs.data_segmentation_result|safe }}
-    var num_labels_segmentation_result = {{ chartjs.num_labels_segmentation_result|safe }}
-    var backgroundColor_segmentation_result = []
-    for (let i = 0; i < num_labels_segmentation_result; i++) {
-        backgroundColor_segmentation_result.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
-    }
-
-document.addEventListener('DOMContentLoaded', function() {
-    const ctx2 = document.getElementById('chartku2').getContext('2d');
-    const ctx3 = document.getElementById('chartku3').getContext('2d');
-    const ctx4 = document.getElementById('chartku4').getContext('2d');
-    
-    const data2 = {
-        labels: labels_segmentation,
-        datasets: [
-                {
-                    label: 'Number of Users and Segmented Images vs. Not yet segmented',
-                    data: data_segmentation,
-                    backgroundColor: backgroundColor_segmentation,
-                    hoverOffset: 4
-                }
-            ]
-        };
-
-    const data3 = {
-        labels: labels_color,
-        datasets: [
-                {
-                    label: 'Color Distribution of User-Uploaded Images',
-                    data: data_color,
-                    backgroundColor: backgroundColor_color,
-                    hoverOffset: 4
-                }
-            ]
-        };
-
-    const data4 = {
-        labels: labels_segmentation_result,
-        datasets: [
-                {
-                    label: 'Distribution of segmentation results based on the segmentation type',
-                    data: data_segmentation_result,
-                    backgroundColor: backgroundColor_segmentation_result,
-                    hoverOffset: 4
-                }
-            ]
-        };
-
-    new Chart(ctx2, {
-        type: 'bar',
-        data: data2,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Image Uploads Segmented vs. Not yet segmented'
-                }
-            }
-        },
-    });
-
-    new Chart(ctx3, {
-        type: 'bar',
-        data: data3,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Color Distribution of User-Uploaded Images'
-                }
-            }
-        },
-    });
-
-    new Chart(ctx4, {
-        type: 'bar',
-        data: data4,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Distribution of segmentation results based on the segmentation type'
-                }
-            }
-        },
-    });
-});
-</script>
 {% endblock chartjs %}

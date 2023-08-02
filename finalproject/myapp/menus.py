@@ -60,9 +60,6 @@ it_admin_menus = [
         id="segmentation",
         submenus=[
             create_menu(
-                "Do Segmentation", "/segmentation/", "fas fa-play", id="segmentation"
-            ),
-            create_menu(
                 "Segmentation by Color",
                 "/image/graph/color/",
                 "fas fa-palette",

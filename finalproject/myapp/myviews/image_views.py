@@ -12,7 +12,17 @@ from django.views.generic import (
     DeleteView,
     FormView,
 )
-
+from myapp.utils.segmentation import (
+    perform_k_means_segmentation,
+    get_top_segmentations,
+    calculate_scores,
+    perform_adaptive_segmentation,
+    perform_otsu_segmentation,
+    perform_sobel_segmentation,
+    perform_canny_segmentation,
+    perform_prewitt_segmentation,
+    get_segmentation_results_data,
+)
 from django.core.paginator import Paginator
 
 # models import
@@ -261,6 +271,46 @@ class ImageDeleteView(DeleteView):
         return redirect("myapp:image_list")
 
 
+def perform_segmentation(segmentation_type, segmentation_results_data, image):
+    segmentations = {
+        "kmeans": {
+            "perform": perform_k_means_segmentation,
+            "top": get_top_segmentations,
+        },
+        "adaptive": {
+            "perform": perform_adaptive_segmentation,
+            "top": get_top_segmentations,
+        },
+        "otsu": {
+            "perform": perform_otsu_segmentation,
+            "top": get_top_segmentations,
+        },
+        "sobel": {
+            "perform": perform_sobel_segmentation,
+            "top": get_top_segmentations,
+        },
+        "prewitt": {
+            "perform": perform_prewitt_segmentation,
+            "top": get_top_segmentations,
+        },
+        "canny": {
+            "perform": perform_canny_segmentation,
+            "top": get_top_segmentations,
+        },
+    }
+
+    if (
+        segmentation_type in segmentations
+        and not segmentation_results_data[segmentation_type]["available"]
+    ):
+        # print(f"Performing {segmentation_type} segmentation...")
+        perform_func = segmentations[segmentation_type]["perform"]
+        perform_func(image)
+        top_func = segmentations[segmentation_type]["top"]
+        if top_func:
+            top_func(image, segmentation_type)
+
+
 class ImageUploadView(CreateView):
     form_class = ImageForm
     template_name = "myapp/image/image_upload.html"
@@ -314,6 +364,24 @@ class ImageUploadView(CreateView):
         process_and_save_image_preprocessing(
             image_obj, image_array, selected_parameters
         )
+        # get result image upload
+        image = Image.objects.get(id=image_obj.id)
+
+        selected_segmentation_types = self.request.POST.getlist("segmentation_types")
+        print("selected_segmentation_types:", selected_segmentation_types)
+        print("image:", image)
+        segmentation_results_data = get_segmentation_results_data(image)
+        # print("selected_segmentation_types:", selected_segmentation_types)
+
+        for segmentation_type in selected_segmentation_types:
+            if SegmentationResult.objects.filter(
+                image=image, segmentation_type=segmentation_type
+            ).exists():
+                # print(f"Segmentation {segmentation_type} already exists.")
+                continue
+
+            perform_segmentation(segmentation_type, segmentation_results_data, image)
+
         return redirect("myapp:image_list")
 
     # update context
@@ -326,6 +394,10 @@ class ImageUploadView(CreateView):
         context["app_js"] = "myapp/js/scripts.js"
         context["logo"] = "myapp/images/Logo.png"
         context["menus"] = menus
+        context["segmentation_types"] = [
+            "otsu",
+            "canny",
+        ]
         set_user_menus(self.request, context)
         return context
 

@@ -90,6 +90,15 @@
                         </div>
                         {% endif %}
                     {% endfor %}
+                    <div class="flex-col space-y-2 hidden">
+                        <label for="segmentation_types">Segmentation Types</label>
+                        {% for segmentation_type in segmentation_types %}
+                        <div class="flex flex-row space-x-2">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" id="{{ segmentation_type }}" name="segmentation_types" value="{{ segmentation_type }}" class="text-sm text-gray-500" checked>
+                            <label for="{{ segmentation_type }}" class="text-sm text-gray-500">{{ segmentation_type|title }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
                     <div class="flex flex-row justify-end items-center space-x-2">
                         <button type="submit" class="flex flex-row justify-center items-center bg-blue-500 hover:bg-blue-600 rounded-md px-4 py-2 text-white">
                             <i class="fas fa-upload"></i>
