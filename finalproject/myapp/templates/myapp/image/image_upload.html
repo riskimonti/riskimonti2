@@ -76,7 +76,21 @@
                                     </ul>
                                 {% endif %}
                             </div>
-                        {% else %}
+                        {% endif %}
+                        {% if field.name == 'distance' %}
+                        <div class="flex-col hidden">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <input type="number" name="{{ field.name }}" class="{{ field.field.widget.attrs.class }}" value="{{ field.value|default_if_none:'10' }}">
+                            {% if field.errors %}
+                                <ul class="text-red-500">
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% if field.name != 'uploader' and field.name != 'distance' %}
                         <div class="flex flex-col">
                             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {{ field }}
