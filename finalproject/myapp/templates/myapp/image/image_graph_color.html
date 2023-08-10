@@ -192,310 +192,90 @@
 {% endblock content %}
 {% block chartjs%}
 <script>
-    const labels = {{ chartjs.labels|safe }};
-    const data_color = {{ chartjs.data_color|safe }};
-    const dict_color = {{ chartjs.dict_color|safe }};
-    const data_width = {{ chartjs.data_width|safe }};
-    const dict_width = {{ chartjs.dict_width|safe }};
-    const data_height = {{ chartjs.data_height|safe }};
-    const dict_height = {{ chartjs.dict_height|safe }};
-    const data_size = {{ chartjs.data_size|safe }};
-    const dict_size = {{ chartjs.dict_size|safe }};
-    const data_channel = {{ chartjs.data_channel|safe }};
-    const dict_channel = {{ chartjs.dict_channel|safe }};
-    const data_format = {{ chartjs.data_format|safe }};
-    const dict_format = {{ chartjs.dict_format|safe }};
-    const data_dpi = {{ chartjs.data_dpi|safe }};
-    const dict_dpi = {{ chartjs.dict_dpi|safe }};
-    const data_distance = {{ chartjs.data_distance|safe }};
-    const dict_distance = {{ chartjs.dict_distance|safe }};
-    const data_uploader = {{ chartjs.data_uploader|safe }};
-    const dict_uploader = {{ chartjs.dict_uploader|safe }};
-    const data_segmentation = {{ chartjs.data_segmentation|safe }};
-    const dict_segmentation = {{ chartjs.dict_segmentation|safe }};
-    const data_f1_score = {{ chartjs.data_f1_score|safe }};
-    const data_jaccard_score = {{ chartjs.data_jaccard_score|safe }};
-    const data_rand_score = {{ chartjs.data_rand_score|safe }};
-    const data_mse = {{ chartjs.data_mse|safe }};
-    const data_psnr = {{ chartjs.data_psnr|safe }};
+    const new_labels = {{ chartjs.new_labels|safe }};
+    const data_mse_otsu = {{ chartjs.data_mse_otsu|safe }};
+    const data_mse_canny = {{ chartjs.data_mse_canny|safe }};
+    const data_psnr_otsu = {{ chartjs.data_psnr_otsu|safe }};
+    const data_psnr_canny = {{ chartjs.data_psnr_canny|safe }};
 
     const data = {
-        labels: labels,
+        labels: new_labels,
         datasets: [
             {
-                label: 'Color',
-                data: data_color,
-                // red
-                borderColor:  '#ff0000',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Width',
-                data: data_width,
-                // blue
-                borderColor:  '#0000ff',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Height',
-                data: data_height,
-                // green
-                borderColor:  '#00ff00',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Size',
-                data: data_size,
-                // yellow
-                borderColor:  '#ffff00',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Channel',
-                data: data_channel,
-                // purple
-                borderColor:  '#800080',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Format',
-                data: data_format,
-                // orange
-                borderColor:  '#ffa500',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'DPI',
-                data: data_dpi,
-                // pink
-                borderColor:  '#ff69b4',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Distance',
-                data: data_distance,
-                // brown
-                borderColor:  '#a52a2a',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Uploader',
-                data: data_uploader,
-                // gray
-                borderColor:  '#808080',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            },
-            {
-                label: 'Segmentation',
-                data: data_segmentation,
-                // red
-                borderColor:  '#ff0000',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4,
-                hidden: true
-            }, 
-            {
-                label: 'MSE',	
-                data: data_mse,
-                // teal
+                label: 'MSE Otsu',
+                data: data_mse_otsu,
                 borderColor: '#008080',
                 fill: false,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
             }, 
             {
-                label: 'PSNR',
-                data: data_psnr,
-                // orange
-                borderColor:  '#ffa500',
+                label: 'MSE Canny',
+                data: data_mse_canny,
+                borderColor: '#0000ff',
                 fill: false,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
             },
+            {
+                label: 'PSNR Otsu',
+                data: data_psnr_otsu,
+                borderColor: '#008000',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            },
+            {
+                label: 'PSNR Canny',
+                data: data_psnr_canny,
+                borderColor: '#ff0000',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            }
         ]
     };
   document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('myChart').getContext('2d');
-    new Chart(ctx, {
+    const myChart = new Chart(ctx, {
         type: 'line',
         data: data,
         options: {
-            animations: {
-                tension: {
-                    duration: 1000,
-                    easing: 'linear',
-                    from: 1,
-                    to: 0,
-                    loop: true
-                }
-            },
             responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    display: true
-                },
-                x: {
-                    beginAtZero: true,
-                    display: true
-                }
-            },
             plugins: {
                 title: {
                     display: true,
-                    text: 'Segmentation Graph',
+                    text: 'Grafik MSE dan PSNR'
+                },
+                legend: {
+                    position: 'bottom',
                 },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
-                    usePointStyle: true,
-                    callbacks: {
-                        labelPointStyle: function(context) {
-                            if (context.dataset.label == 'Color') {
-                                return {
-                                    pointStyle: 'circle',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Width') {
-                                return {
-                                    pointStyle: 'triangle',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Height') {
-                                return {
-                                    pointStyle: 'rect',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Size') {
-                                return {
-                                    pointStyle: 'crossRot',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Channel') {
-                                return {
-                                    pointStyle: 'star',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Format') {
-                                return {
-                                    pointStyle: 'rectRot',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'DPI') {
-                                return {
-                                    pointStyle: 'triangle',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Distance') {
-                                return {
-                                    pointStyle: 'rect',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Uploader') {
-                                return {
-                                    pointStyle: 'circle',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Segmentation') {
-                                return {
-                                    pointStyle: 'crossRot',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'F1 Score') {
-                                return {
-                                    pointStyle: 'crossRot',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Jaccard Score') {
-                                return {
-                                    pointStyle: 'crossRot',
-                                    rotation: 0
-                                };
-                            } else if (context.dataset.label == 'Rand Score') {
-                                return {
-                                    pointStyle: 'crossRot',
-                                    rotation: 0
-                                };
-                            }
-                        },
-                        label: function(context) {
-                            
-                            var label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                // label += context.parsed.y + ' %';
-                                // change value context.parsed.y to dict
-                                if (context.dataset.label == 'Color') {
-                                    label += dict_color[context.parsed.y];
-                                } else if (context.dataset.label == 'Width') {
-                                    label += dict_width[context.parsed.y];
-                                } else if (context.dataset.label == 'Height') {
-                                    label += dict_height[context.parsed.y];
-                                } else if (context.dataset.label == 'Size') {
-                                    if (dict_size[context.parsed.y] > 1024) {
-                                        label += dict_size[context.parsed.y] / 1024 + ' MB';
-                                    } else {
-                                        label += dict_size[context.parsed.y] + ' KB';
-                                    }
-                                } else if (context.dataset.label == 'Channel') {
-                                    label += dict_channel[context.parsed.y];
-                                } else if (context.dataset.label == 'Format') {
-                                    label += dict_format[context.parsed.y];
-                                } else if (context.dataset.label == 'DPI') {
-                                    label += dict_dpi[context.parsed.y];
-                                } else if (context.dataset.label == 'Distance') {
-                                    label += dict_distance[context.parsed.y];
-                                } else if (context.dataset.label == 'Uploader') {
-                                    label += dict_uploader[context.parsed.y];
-                                } else if (context.dataset.label == 'Segmentation') {
-                                    label += dict_segmentation[context.parsed.y];
-                                } else if (context.dataset.label == 'F1 Score') {
-                                    label += context.parsed.y;
-                                } else if (context.dataset.label == 'Jaccard Score') {
-                                    label += context.parsed.y;
-                                } else if (context.dataset.label == 'Rand Score') {
-                                    label += context.parsed.y;
-                                } else {
-                                    label += context.parsed.y;
-                                }
-                            }
-                            return label;
-                        },
-                    },
-                    position: 'nearest',
                 },
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Data'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Nilai'
+                    }
+                }
             }
-        }
+        },
     });
   });
 </script>

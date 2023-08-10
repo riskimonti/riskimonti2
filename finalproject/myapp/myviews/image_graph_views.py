@@ -394,6 +394,27 @@ class ImageGraphColorClassView(ListView):
             label = "{} {} {}".format(color_label, segmentation_label, cc)
             labels.append(label)
 
+        # pisahkan data label menjadi 2 bagian label yang isinya mengandung like canny dan otsu
+        labels_canny = []
+        labels_otsu = []
+        for label in labels:
+            if "canny" in label:
+                labels_canny.append(label)
+            if "otsu" in label:
+                labels_otsu.append(label)
+
+        print(labels_canny)
+        print(labels_otsu)
+
+        # buat label baru jika label canny dan otsu jumlahnya sama
+        new_labels = []
+        if len(labels_canny) == len(labels_otsu):
+            for i in range(len(labels_canny)):
+                label = "{} {}".format("image", i + 1)
+                new_labels.append(label)
+
+        print(new_labels)
+
         #  ambil semua data dari model Segmentation berdasarkan field_data["segment"]
         segment_data = Segmentation.objects.filter(id__in=field_data["segment"])
 
@@ -405,8 +426,29 @@ class ImageGraphColorClassView(ListView):
         jaccard_score_data = list(jaccard_score_data)
         mse_data = segment_data.values_list("mse", flat=True)
         mse_data = list(mse_data)
+        # mse data with a segmentation_type of otsu
+        mse_data_otsu = segment_data.filter(segmentation_type="otsu").values_list(
+            "mse", flat=True
+        )
+        mse_data_otsu = list(mse_data_otsu)
+        # mse data with a segmentation_type of canny
+        mse_data_canny = segment_data.filter(segmentation_type="canny").values_list(
+            "mse", flat=True
+        )
+        mse_data_canny = list(mse_data_canny)
+        # print(mse_data_otsu)
+        print("mse_data_otsu", mse_data_otsu)
         psnr_data = segment_data.values_list("psnr", flat=True)
         psnr_data = list(psnr_data)
+        # psnr data with a segmentation_type of canny
+        psnr_data_canny = segment_data.filter(segmentation_type="canny").values_list(
+            "psnr", flat=True
+        )
+        psnr_data_canny = list(psnr_data_canny)
+        psnr_data_otsu = segment_data.filter(segmentation_type="otsu").values_list(
+            "psnr", flat=True
+        )
+        psnr_data_otsu = list(psnr_data_otsu)
 
         unique_fields2 = [
             "f1_score",
@@ -747,8 +789,13 @@ class ImageGraphColorClassView(ListView):
             "data_jaccard_score": jaccard_score_data,
             "data_rand_score": rand_score_data,
             "data_psnr": psnr_data,
+            "data_psnr_otsu": psnr_data_otsu,
+            "data_psnr_canny": psnr_data_canny,
             "data_mse": mse_data,
+            "data_mse_otsu": mse_data_otsu,
+            "data_mse_canny": mse_data_canny,
             "labels": labels,
+            "new_labels": new_labels,
         }
 
         return queryset
