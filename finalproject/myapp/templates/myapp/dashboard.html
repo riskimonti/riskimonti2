@@ -85,7 +85,7 @@
                                 <div class="flex-1 flex-col space-y-2 bg-red-200 rounded-md p-4 shadow-md z-10">
                                     <h1 class="text-xl font-sm text-gray-700">Rata-rata Hasil Pengujian</h1>
                                     <h1 class="text-l font-normal text-gray-700">Mean Square Error (MSE)</h1>
-                                    <h1 class="text-3xl font-bold text-gray-700">{{ avg_mse|floatformat:3|intcomma }} dB</h1>
+                                    <h1 class="text-3xl font-bold text-gray-700">{{ avg_mse|floatformat:3|intcomma }}</h1>
                                     <!-- link ke hasil -->
                                     <a href="{% url 'myapp:image_table_color' %}?type={% if request.GET.type == 'all' %}all{% else %}{{ request.GET.type }}{% endif %}&color={% if request.GET.color == 'all' %}all{% else %}{{ request.GET.color }}{% endif %}" class="text-sm text-blue-500 hover:underline">
                                         Lihat Hasil
