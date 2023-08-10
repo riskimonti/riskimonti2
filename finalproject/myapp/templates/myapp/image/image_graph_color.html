@@ -52,8 +52,11 @@
         </div>
         <div class="flex flex-col space-y-2" id="divPrint">
             <h1 class="text-3xl font-bold text-gray-700 hidden m-4" id="H1divPrint">Hasil Segmen Gambar</h1>
-            <div class="container segmentationView" id="masukkanboy">
+            <div class="container segmentationView hidden" id="masukkanboy">
                 <canvas id="myChart" height="100px"></canvas>
+            </div>
+            <div class="container segmentationView" id="masukkanboy">
+                <canvas id="myChart2" height="100px"></canvas>
             </div>
             <!-- Hasil -->
             <div class="flex flex-col space-y-2">
@@ -197,6 +200,11 @@
     const data_mse_canny = {{ chartjs.data_mse_canny|safe }};
     const data_psnr_otsu = {{ chartjs.data_psnr_otsu|safe }};
     const data_psnr_canny = {{ chartjs.data_psnr_canny|safe }};
+    const data_rata_mse_otsu = {{ chartjs.data_rata_mse_otsu|safe }};
+    const data_rata_mse_canny = {{ chartjs.data_rata_mse_canny|safe }};
+    const data_rata_psnr_otsu = {{ chartjs.data_rata_psnr_otsu|safe }};
+    const data_rata_psnr_canny = {{ chartjs.data_rata_psnr_canny|safe }};
+    const data_rata_rata = {{ chartjs.data_rata_rata|safe }};
 
     const data = {
         labels: new_labels,
@@ -235,8 +243,22 @@
             }
         ]
     };
+    const data_rata = {
+        labels: ['MSE Otsu', 'MSE Canny', 'PSNR Otsu', 'PSNR Canny'],
+        datasets: [
+            {
+                label: 'Rata-rata',
+                data: data_rata_rata,
+                borderColor: '#000000',
+                fill: false,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+            }
+        ]
+    };
   document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('myChart').getContext('2d');
+    const ctx_rata = document.getElementById('myChart2').getContext('2d');
     const myChart = new Chart(ctx, {
         type: 'line',
         data: data,
@@ -246,6 +268,46 @@
                 title: {
                     display: true,
                     text: 'Grafik MSE dan PSNR'
+                },
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Data'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Nilai'
+                    }
+                }
+            }
+        },
+    });
+    const myChart2 = new Chart(ctx_rata, {
+        type: 'bar',
+        data: data_rata,
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Grafik Rata-rata MSE dan PSNR'
                 },
                 legend: {
                     position: 'bottom',

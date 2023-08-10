@@ -431,11 +431,15 @@ class ImageGraphColorClassView(ListView):
             "mse", flat=True
         )
         mse_data_otsu = list(mse_data_otsu)
+        # rata rata mse otsu
+        mse_data_otsu_mean = sum(mse_data_otsu) / len(mse_data_otsu)
         # mse data with a segmentation_type of canny
         mse_data_canny = segment_data.filter(segmentation_type="canny").values_list(
             "mse", flat=True
         )
         mse_data_canny = list(mse_data_canny)
+        # rata rata mse canny
+        mse_data_canny_mean = sum(mse_data_canny) / len(mse_data_canny)
         # print(mse_data_otsu)
         print("mse_data_otsu", mse_data_otsu)
         psnr_data = segment_data.values_list("psnr", flat=True)
@@ -445,10 +449,14 @@ class ImageGraphColorClassView(ListView):
             "psnr", flat=True
         )
         psnr_data_canny = list(psnr_data_canny)
+        # raata rata psnr canny
+        psnr_data_canny_mean = sum(psnr_data_canny) / len(psnr_data_canny)
         psnr_data_otsu = segment_data.filter(segmentation_type="otsu").values_list(
             "psnr", flat=True
         )
         psnr_data_otsu = list(psnr_data_otsu)
+        # rata rata psnr otsu
+        psnr_data_otsu_mean = sum(psnr_data_otsu) / len(psnr_data_otsu)
 
         unique_fields2 = [
             "f1_score",
@@ -796,6 +804,16 @@ class ImageGraphColorClassView(ListView):
             "data_mse_canny": mse_data_canny,
             "labels": labels,
             "new_labels": new_labels,
+            "data_rata_mse_otsu": mse_data_otsu_mean,
+            "data_rata_mse_canny": mse_data_canny_mean,
+            "data_rata_psnr_otsu": psnr_data_otsu_mean,
+            "data_rata_psnr_canny": psnr_data_canny_mean,
+            "data_rata_rata": [
+                mse_data_otsu_mean,
+                mse_data_canny_mean,
+                psnr_data_otsu_mean,
+                psnr_data_canny_mean,
+            ],
         }
 
         return queryset
