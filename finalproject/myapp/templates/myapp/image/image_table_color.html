@@ -136,7 +136,7 @@
                             <td class="border px-2 py-1 text-xs space-x-2">
                                 <div class="flex flex-row justify-center items-start flex-wrap px-2 py-1 text-xs space-x-2 mt-2">
                                     <span class="px-2 py-1 rounded-md bg-indigo-200 text-indigo-700 text-xs hover:bg-indigo-300 cursor-pointer">
-                                        {{ image.segment.psnr|floatformat:3|intcomma }} dB
+                                        {{ image.segment.mse|floatformat:3|intcomma }}
                                     </span>
                                 </div>
                             </td>

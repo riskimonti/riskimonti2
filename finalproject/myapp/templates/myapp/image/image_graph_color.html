@@ -212,7 +212,8 @@
             {
                 label: 'MSE Otsu',
                 data: data_mse_otsu,
-                borderColor: '#008080',
+                // blue
+                borderColor: '#0000ff',
                 fill: false,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -220,7 +221,8 @@
             {
                 label: 'MSE Canny',
                 data: data_mse_canny,
-                borderColor: '#0000ff',
+                // green
+                borderColor: '#008000',
                 fill: false,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -228,7 +230,8 @@
             {
                 label: 'PSNR Otsu',
                 data: data_psnr_otsu,
-                borderColor: '#008000',
+                // red
+                borderColor: '#ff0000',
                 fill: false,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -236,7 +239,8 @@
             {
                 label: 'PSNR Canny',
                 data: data_psnr_canny,
-                borderColor: '#ff0000',
+                // yellow
+                borderColor: '#ffff00',
                 fill: false,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -249,10 +253,20 @@
             {
                 label: 'Rata-rata',
                 data: data_rata_rata,
-                borderColor: '#000000',
-                fill: false,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4
+                backgroundColor: [
+                    '#0000ff', // Blue for MSE Otsu
+                    '#008000', // Green for MSE Canny
+                    '#ff0000', // Red for PSNR Otsu
+                    '#ffff00'  // Yellow for PSNR Canny
+                ],
+                borderColor: [
+                    '#0000ff',
+                    '#008000',
+                    '#ff0000',
+                    '#ffff00'
+                ],
+                borderWidth: 1,
+                barThickness: 'flex', // You can adjust this value for bar thickness
             }
         ]
     };
